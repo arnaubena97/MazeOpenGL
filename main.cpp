@@ -1,16 +1,53 @@
 /********************************************************
  *
- * Author: Akshat Malviya (@akshat157)
- * Date: Sunday, June 07
- * Desc: A random maze generator using backtracking!
+ * Authors: Arnau Benavides, Marc Felip
  *
 *********************************************************/
 
+#include <GL/glut.h>
 #include <iostream>
 #include <stack>
 #include <vector>
 #include <random>
 using namespace std;
+
+
+#define COLUMNS 16
+#define ROWS 14
+#define WIDTH 500
+#define HEIGHT 500
+
+//-----------------------------------------------
+
+void display();;
+//void keyboard(unsigned char c,int x,int y);
+
+//-----------------------------------------------
+
+int keyflag=0;
+
+//-----------------------------------------------
+// -- MAIN PROCEDURE
+//-----------------------------------------------
+
+int main(int argc,char *argv[])
+{
+  glutInit(&argc, argv);
+  glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
+  glutInitWindowPosition(700, 400);
+  glutInitWindowSize(WIDTH, HEIGHT);
+  glutCreateWindow("Maze board");
+
+  glutDisplayFunc(display);
+  //glutKeyboardFunc(keyboard);
+
+  glMatrixMode(GL_PROJECTION);
+  gluOrtho2D(0,WIDTH-1,0,HEIGHT-1);
+
+  glutMainLoop();
+  return 0;
+}
+
 
 // Default values
 int m = 4, n = 4;
@@ -124,7 +161,11 @@ void createMaze(int M, int N, char** maze) {
     }
 }
 
-int main(int argc, char const *argv[]) {
+void display() {
+    glClearColor(1.0,1.0,1.0,1.0);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+
     m = 9;
     n = 9;
     int M = 2*m+1;
@@ -143,10 +184,12 @@ int main(int argc, char const *argv[]) {
     //###############################################
     for (int i = 0; i < M; i++) {
         for (int j = 0; j < N; j++) {
-            if (!(i&1)||!(j&1))
+            if (!(i&1)||!(j&1)){
                 maze[i][j] = '#';
+            }
             else
                 maze[i][j] = ' ';
+            
 
         }
     }
@@ -164,6 +207,63 @@ int main(int argc, char const *argv[]) {
     maze[1][1] = 'S'; // coloquem la sortida S
     maze[2*m-1][2*n-1] = 'E'; // coloquem l'entrada E
     displayMaze(M, N, maze); // imprimim per pantalla el laberint
+
+   //Dibuixar les parets del laberint
+   for (int i = 0; i < M ; i+=1) {
+        for (int j = N-1; j >= 0; j -= 1) {
+            if (maze[i][j] =='#'){
+
+                glColor3f(0.5,0.5,0.5);
+                glBegin(GL_QUADS);
+
+                glVertex2i(i*WIDTH/M,j*HEIGHT/N); 
+                glVertex2i((i+1)*WIDTH/M,j*HEIGHT/N); 
+                glVertex2i((i+1)*WIDTH/M,(j+1)*HEIGHT/N); 
+                glVertex2i(i*WIDTH/M,(j+1)*HEIGHT/N);  
+
+                glEnd();     
+            }  
+            else if (maze[i][j] =='S'){
+
+                glColor3f(0.8,0.3,0.5);
+                glBegin(GL_QUADS);
+
+                glVertex2i(i*WIDTH/M,j*HEIGHT/N); 
+                glVertex2i((i+1)*WIDTH/M,j*HEIGHT/N); 
+                glVertex2i((i+1)*WIDTH/M,(j+1)*HEIGHT/N); 
+                glVertex2i(i*WIDTH/M,(j+1)*HEIGHT/N);  
+
+                glEnd();     
+            } else if (maze[i][j] =='E'){
+
+                glColor3f(0.8,0.2,0.8);
+                glBegin(GL_QUADS);
+
+                glVertex2i(i*WIDTH/M,j*HEIGHT/N); 
+                glVertex2i((i+1)*WIDTH/M,j*HEIGHT/N); 
+                glVertex2i((i+1)*WIDTH/M,(j+1)*HEIGHT/N); 
+                glVertex2i(i*WIDTH/M,(j+1)*HEIGHT/N);  
+
+                glEnd();     
+            }
+        }
+
+    }
+    glutSwapBuffers();
     
-    return 0;
 }
+
+//-----------------------------------------------
+//-----------------------------------------------
+/*
+void keyboard(unsigned char c,int x,int y)
+{
+  if(keyflag==0)
+    keyflag=1;
+  else
+    keyflag=0;
+
+  glutPostRedisplay();
+
+};
+*/
