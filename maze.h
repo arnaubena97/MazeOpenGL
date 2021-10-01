@@ -41,6 +41,7 @@ class Maze {
                     }  
                 }
             }
+            printf("NUMWALLS %d\n", cnt);
             return cnt;
         }
     private:

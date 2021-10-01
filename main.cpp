@@ -35,8 +35,8 @@ float SIZE_SQUARE_W = (float)WIDTH/(float)COLUMNS;
 float SIZE_SQUARE_H = (float)HEIGHT/(float)ROWS;
 
 Maze maze(MED_COLUMNS, MED_ROWS);
-SquaresWall walls(maze.getNumWalls());
-Square wall;
+SquaresWall wall(maze.getNumWalls());
+//Square wall;
 Square agent1;
 Square agent2;
 
@@ -79,12 +79,14 @@ int main(int argc,char *argv[])
 //-----------------------------------------------
 
 void chargeSquares(){
-    walls.setPositions(maze);
-    walls.setSizesXY(SIZE_SQUARE_W, SIZE_SQUARE_H);
-    wall.color.setColor(0.5,0.5,0.5);
+    //wall.reserveMemory(maze.getNumWalls());
+    wall.setSizesXY(SIZE_SQUARE_W, SIZE_SQUARE_H);
+    wall.setPositions(maze);
+    
+    //wall.color.setColor(0.5,0.5,0.5);
     agent1.color.setColor(0.8,0.2,0.8);
     agent2.color.setColor(0.3,0.2,0.8);
-    wall.setSizesXY(SIZE_SQUARE_W, SIZE_SQUARE_H);
+    //wall.setSizesXY(SIZE_SQUARE_W, SIZE_SQUARE_H);
     agent1.setSizesXY(SIZE_SQUARE_W, SIZE_SQUARE_H);
     agent2.setSizesXY(SIZE_SQUARE_W, SIZE_SQUARE_H);
 
@@ -98,20 +100,20 @@ void chargeSquares(){
 void display() {
     glClearColor(1.0,1.0,1.0,1.0);
     glClear(GL_COLOR_BUFFER_BIT); 
-    walls.draw();
-   for (int i = 0; i < maze.columns ; i++) {
-        for (int j = 0; j < maze.rows; j++) {
-            if (maze.board[i][j] =='#'){
-                //wall.draw(i,j);
-            }  
-            else if (maze.board[i][j] =='S'){
-                agent1.draw(i,j,SIZE_SQUARE_SMALL); 
+    wall.draw();
+    for (int i = 0; i < maze.columns ; i++) {
+            for (int j = 0; j < maze.rows; j++) {
+                if (maze.board[i][j] =='#'){
+                    //wall.draw(i,j);
+                }  
+                else if (maze.board[i][j] =='S'){
+                    //agent1.draw(i,j,SIZE_SQUARE_SMALL); 
 
-            } else if (maze.board[i][j] =='E'){
-                agent2.draw(i,j,SIZE_SQUARE_SMALL);
+                } else if (maze.board[i][j] =='E'){
+                    //agent2.draw(i,j,SIZE_SQUARE_SMALL);
+                }
             }
         }
-    }
     glutSwapBuffers();
 }
 
