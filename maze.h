@@ -2,7 +2,21 @@
 #include <stack>
 #include <vector>
 #include <random>
+#include <tuple> 
 using namespace std;
+
+class Point{
+    public:
+    float x, y;
+    Point(){
+        this ->x = 0;
+        this ->y = 0;
+    }
+    Point(float x , float y){
+        this ->x = x;
+        this ->y = y;
+    }
+};
 
 class Maze {     
     public:       
@@ -43,6 +57,29 @@ class Maze {
             }
             return cnt;
         }
+        
+        Point getStartPoint(){
+            for (int i = 0; i < columns; i++) {
+                for (int j = 0; j < rows; j++) {
+                    if (board[i][j] =='S'){
+                        return Point(i, j);
+                    }
+                }
+            }
+            return Point(0,0);
+        }
+        
+        Point getEndPoint(){
+            for (int i = 0; i < columns; i++) {
+                for (int j = 0; j < rows; j++) {
+                    if (board[i][j] =='E'){
+                        return Point(i, j);
+                    }
+                }
+            }
+            return Point(0,0);
+        }
+    
     private:
         int med_columns;
         int med_rows;
