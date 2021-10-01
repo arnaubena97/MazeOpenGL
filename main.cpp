@@ -47,11 +47,14 @@ Square agent2;
 void display();
 void chargeSquares();
 void keyboard(unsigned char c,int x,int y);
+void ArrowKey(int key,int x,int y);
 
 
 //-----------------------------------------------
 //             MAIN PROCEDURE
 //-----------------------------------------------
+long last_t=0;
+Square square;
 
 int main(int argc,char *argv[])
 {
@@ -66,6 +69,7 @@ int main(int argc,char *argv[])
 
     glutDisplayFunc(display);
     glutKeyboardFunc(keyboard);
+    glutSpecialFunc(ArrowKey);
 
     glMatrixMode(GL_PROJECTION);
     gluOrtho2D(0,WIDTH-1,0,HEIGHT-1);
@@ -119,28 +123,58 @@ void display() {
 //            KEYBOARD EVENTS
 //-----------------------------------------------
 
-void keyboard(unsigned char c,int x,int y){
+/*
+void keyboard(unsigned char key, int x, int y){
+    exit(0);
+}
+*/
 
-    switch (c) {
-        case 'w':
-        cout << "Move UP";
-        agent1.moveUp();
-        break;
-        case 's':
-        cout << "Move DOWN";
-        agent1.moveUp();
-        break;
-        case 'a':
-        cout << "Move LEFT";
-        agent1.moveUp();
-        break;
-        case 'd':
-        cout << "Move RIGHT";
-        agent1.moveUp();
-        break;
+void ArrowKey(int key,int x,int y){
+
+    switch (key){
+        case GLUT_KEY_RIGHT:
+            agent1.moveRight();
+            break;
+        case GLUT_KEY_LEFT:
+            agent1.moveLeft();
+            break;
+        case GLUT_KEY_UP:
+            agent1.moveUp();
+            break;
+        case GLUT_KEY_DOWN:
+            agent1.moveDown();
+            break;
         case 'z':
-        cout << "EXIT";
+            exit(0);
+            break;
+    }
+
+    glutPostRedisplay();
+};
+
+void keyboard(unsigned char key, int x, int y){
+    switch (key) {
+        case 27:
         exit(0);
         break;
     }
 };
+
+//-----------------------------------------------
+//-----------------------------------------------
+void idle(){
+  long t;
+
+  t=glutGet(GLUT_ELAPSED_TIME); 
+
+  if(last_t==0)
+    last_t=t;
+  else
+    {
+      square.integrate(t-last_t);
+      last_t=t;
+    }
+
+
+  glutPostRedisplay();
+}

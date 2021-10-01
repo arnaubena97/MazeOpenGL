@@ -95,12 +95,19 @@ class Square {
             this -> x = x;
             this -> y = y;
         }
-        void moveUp(){
 
+        void moveUp(){
+            glTranslatef(0.0, 25.0, 0.0);
         }
-        void moveDown(){}
-        void moveLeft(){}
-        void moveRight(){}
+        void moveDown(){
+            glTranslatef(0.0, -25.0, 0.0);
+        }
+        void moveLeft(){
+            glTranslatef(-25.0, 0.0, 0.0);
+        }
+        void moveRight(){
+            glTranslatef(25.0, 0.0, 0.0);
+        }
     //private:
        
 };
@@ -142,3 +149,4 @@ class SquaresWall {
             size_x = x;
         }
 };
+
