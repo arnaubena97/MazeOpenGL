@@ -8,6 +8,10 @@
 #include<tuple> 
 using namespace std;
 
+
+#define MOVE 1
+#define QUIET 2
+
 class RGB{
     public:    
         float r,g,b;
@@ -15,6 +19,11 @@ class RGB{
             r=x;
             g=y;
             b=z;
+        }
+        void setColor(RGB color){
+            r=color.r;
+            g=color.g;
+            b=color.b;
         }
 };
 
@@ -29,8 +38,22 @@ class Square {
         /*UTILS*/
         RGB color;
         float size_x, size_y;
+        Square(){
+            state = QUIET;
+        }
             
-        void Draw(int x, int y, int scale = 0){
+        void draw(int x, int y, int scale = 0){
+            this -> x = x * size_x;
+            this -> y = y * size_y;
+            glColor3f(color.r,color.g,color.b);
+            glBegin(GL_QUADS);
+            glVertex2i(x * size_x + scale ,y*size_y + scale);//vertex baix esquerra
+            glVertex2i((x+1)* size_x -scale,y*size_y+scale);//vertex baix dreta
+            glVertex2i((x+1) * size_x -scale ,(y+1)*size_y-scale);//vertex dalt dreta
+            glVertex2i(x * size_x +scale,(y+1)*size_y-scale);//vertex dalt esquerra
+            glEnd();
+        }
+        void draw(int scale =0){
             glColor3f(color.r,color.g,color.b);
             glBegin(GL_QUADS);
             glVertex2i(x * size_x + scale ,y*size_y + scale);//vertex baix esquerra
@@ -43,9 +66,79 @@ class Square {
             size_y = y;
             size_x = x;
         }
+        void changeState(){
+            state==QUIET ? state = MOVE : state= QUIET;
+        }
+        void init_movement(int destination_x,int destination_y,int duration){
+            vx = (destination_x - x)/duration;
+            vy = (destination_y - y)/duration;
+
+            changeState();
+            time_remaining=duration;
+        }
+        void integrate(long t){
+            if(state==MOVE && t<time_remaining)
+                {
+                x = x + vx*t;
+                y = y + vy*t;
+                time_remaining-=t;
+                }
+            else if(state==MOVE && t>=time_remaining)
+                {
+                x = x + vx*time_remaining;
+                y = y + vy*time_remaining;
+                state=QUIET;
+                }
+        }
         
+        void setPosition(int x, int y){
+            this -> x = x;
+            this -> y = y;
+        }
+        void moveUp(){
+
+        }
+        void moveDown(){}
+        void moveLeft(){}
+        void moveRight(){}
     //private:
        
-    
 };
 
+class SquaresWall {   
+    float x,y;   //-- Current position  
+    RGB color;
+    float size_x, size_y;
+    Square *walls; 
+
+    public: 
+        SquaresWall(int number){
+            walls = new Square[number];
+            color.setColor(0.5,0.5,0.5);
+
+        }
+        void setPositions(Maze m){
+            int cnt =0;
+            
+            for (int i = 0; i < m.columns ; i++) {
+                for (int j = 0; j < m.rows; j++) {
+                    if (m.board[i][j] =='#'){
+                        //printf("x:%d   y: %d  cnt: %d\n", i , j, cnt);
+                        walls[cnt].setPosition(i, j);
+                        walls[cnt].color.setColor(color);
+                        walls[cnt].setSizesXY(size_x,size_y);
+                        cnt++;
+                    }
+                }
+            }
+        }
+        void draw(int scale =0){
+            for(int i = 0; i< sizeof(walls); i++){
+                walls[i].draw();
+            }
+        }
+        void setSizesXY(float x, float y){
+            size_y = y;
+            size_x = x;
+        }
+};

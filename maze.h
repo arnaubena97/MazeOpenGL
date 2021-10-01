@@ -32,6 +32,17 @@ class Maze {
             }
         }   
     
+        int getNumWalls(){
+            int cnt = 0;
+            for (int i = 0; i < columns ; i++) {
+                for (int j = 0; j < rows; j++) {
+                    if (board[i][j] =='#'){
+                        cnt++;
+                    }  
+                }
+            }
+            return cnt;
+        }
     private:
         int med_columns;
         int med_rows;

@@ -22,8 +22,8 @@
 //              GLOBAL VARIABLES
 //-----------------------------------------------
 
-#define MED_COLUMNS 10
-#define MED_ROWS 10
+#define MED_COLUMNS 4
+#define MED_ROWS 4
 #define SIZE_SQUARE_SMALL 2 // quant mes petit
 #define WIDTH 500
 #define HEIGHT 500
@@ -35,7 +35,7 @@ float SIZE_SQUARE_W = (float)WIDTH/(float)COLUMNS;
 float SIZE_SQUARE_H = (float)HEIGHT/(float)ROWS;
 
 Maze maze(MED_COLUMNS, MED_ROWS);
-
+SquaresWall walls(maze.getNumWalls());
 Square wall;
 Square agent1;
 Square agent2;
@@ -79,12 +79,16 @@ int main(int argc,char *argv[])
 //-----------------------------------------------
 
 void chargeSquares(){
+    walls.setPositions(maze);
+    walls.setSizesXY(SIZE_SQUARE_W, SIZE_SQUARE_H);
     wall.color.setColor(0.5,0.5,0.5);
     agent1.color.setColor(0.8,0.2,0.8);
     agent2.color.setColor(0.3,0.2,0.8);
     wall.setSizesXY(SIZE_SQUARE_W, SIZE_SQUARE_H);
     agent1.setSizesXY(SIZE_SQUARE_W, SIZE_SQUARE_H);
     agent2.setSizesXY(SIZE_SQUARE_W, SIZE_SQUARE_H);
+
+
 }
 
 //-----------------------------------------------
@@ -94,17 +98,17 @@ void chargeSquares(){
 void display() {
     glClearColor(1.0,1.0,1.0,1.0);
     glClear(GL_COLOR_BUFFER_BIT); 
-
+    walls.draw();
    for (int i = 0; i < maze.columns ; i++) {
         for (int j = 0; j < maze.rows; j++) {
             if (maze.board[i][j] =='#'){
-                wall.Draw(i,j);
+                //wall.draw(i,j);
             }  
             else if (maze.board[i][j] =='S'){
-                agent1.Draw(i,j,SIZE_SQUARE_SMALL); 
+                agent1.draw(i,j,SIZE_SQUARE_SMALL); 
 
             } else if (maze.board[i][j] =='E'){
-                agent2.Draw(i,j,SIZE_SQUARE_SMALL);
+                agent2.draw(i,j,SIZE_SQUARE_SMALL);
             }
         }
     }
@@ -116,5 +120,27 @@ void display() {
 //-----------------------------------------------
 
 void keyboard(unsigned char c,int x,int y){
-    exit(0); // Qualsevol pulsacio del teclat tanca el laberint
+
+    switch (c) {
+        case 'w':
+        cout << "Move UP";
+        agent1.moveUp();
+        break;
+        case 's':
+        cout << "Move DOWN";
+        agent1.moveUp();
+        break;
+        case 'a':
+        cout << "Move LEFT";
+        agent1.moveUp();
+        break;
+        case 'd':
+        cout << "Move RIGHT";
+        agent1.moveUp();
+        break;
+        case 'z':
+        cout << "EXIT";
+        exit(0);
+        break;
+    }
 };
