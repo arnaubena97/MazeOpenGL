@@ -99,15 +99,6 @@ class Square {
         void moveRight(){
             glTranslatef(25.0, 0.0, 0.0);
         }
-<<<<<<< HEAD
-=======
-        void moveDown(){}
-        void moveLeft(){}
-        void moveRight(){}
-        void printSizes(){
-            printf("x:%f y:%f sx:%f sy:%f\n", position.x, position.y, size_x, size_y);
-        }
->>>>>>> SqaresWall
     //private:
        
 };
