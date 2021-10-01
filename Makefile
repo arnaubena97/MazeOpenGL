@@ -6,7 +6,7 @@ ifeq ($(UNAME_S), $(OS))
 	gcc -framework OpenGL -framework GLUT main.cpp -o main -lstdc++ 
 else
 	echo "Other system"
-	gcc main.cpp -o main -lglut -lGLU -lGL
+	g++ main.cpp -o main -lglut -lGLU -lGL -lm
 #gcc maze.cpp -o maze -lglut -lGLU -lGL -lm 
 endif
 clean:
