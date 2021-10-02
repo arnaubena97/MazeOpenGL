@@ -88,16 +88,20 @@ class Square {
         }
 
         void moveUp(){
-            glTranslatef(0.0, 25.0, 0.0);
+            position.y = position.y + 1;
+            init_movement(position.x,position.y,1000);
         }
         void moveDown(){
-            glTranslatef(0.0, -25.0, 0.0);
+            position.y = position.y - 1;
+            init_movement(position.x,position.y,1000);
         }
         void moveLeft(){
-            glTranslatef(-25.0, 0.0, 0.0);
+            position.x = position.x - 1;
+            init_movement(position.x,position.y,1000);
         }
         void moveRight(){
-            glTranslatef(25.0, 0.0, 0.0);
+            position.x = position.x + 1;
+            init_movement(position.x,position.y,1000);
         }
     //private:
        
@@ -114,7 +118,6 @@ class Walls {
             num_walls = num;
             walls = new Square[num_walls];
         }
-
         void setPositions(Maze m){
             int cnt =0;
             for (int i = 0; i < m.columns ; i++) {

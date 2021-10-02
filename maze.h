@@ -29,7 +29,7 @@ class Maze {
         {
             med_columns = med_columns1;
             med_rows = med_rows1;
-            columns = med_rows1 * 2 + 1;
+            columns = med_columns1 * 2 + 1;
             rows = med_rows1 * 2 + 1;
             ReserveMemory();
             PutExteriorWalls();
@@ -37,7 +37,7 @@ class Maze {
             PutBeginEnd();
         }
         
-        void Display() {
+        void display() {
             for (int i = 0; i < columns; i++) {
                 for (int j = 0; j < rows; j++) {
                         cout << board[i][j] << " ";
@@ -79,7 +79,20 @@ class Maze {
             }
             return Point(0,0);
         }
-    
+        
+        bool canMoveUp(Point p){
+            /* s'ha de pensar que el board el tenim girat respecte al dibuix grafic*/
+            return board[(int)p.x][(int)p.y+1] != '#' && board[(int)p.x][(int)p.y+1] != 'E';
+        }
+        bool canMoveDown(Point p){
+            return board[(int)p.x][(int)p.y-1] != '#' && board[(int)p.x+1][(int)p.y-1] != 'E';
+        }
+        bool canMoveLeft(Point p){
+            return board[(int)p.x-1][(int)p.y] != '#' && board[(int)p.x-1][(int)p.y] != 'E';
+        }
+        bool canMoveRight(Point p){
+            return board[(int)p.x+1][(int)p.y] != '#' && board[(int)p.x+1][(int)p.y] != 'E';
+        }
     private:
         int med_columns;
         int med_rows;
@@ -206,4 +219,5 @@ class Maze {
             cout << "getIdx() couldn't find the index!" << endl;
         return -1;
     }
+        
 };

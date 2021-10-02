@@ -23,8 +23,8 @@
 //              GLOBAL VARIABLES
 //-----------------------------------------------
 
-#define MED_COLUMNS 4
-#define MED_ROWS 4
+#define MED_COLUMNS 6
+#define MED_ROWS 6
 #define SIZE_SQUARE_SMALL 2 // quant mes petit
 #define WIDTH 500
 #define HEIGHT 500
@@ -36,7 +36,9 @@ float SIZE_SQUARE_W = (float)WIDTH/(float)COLUMNS;
 float SIZE_SQUARE_H = (float)HEIGHT/(float)ROWS;
 
 Maze maze(MED_COLUMNS, MED_ROWS);
+
 Walls wall(maze.getNumWalls());
+
 //Square wall;
 Square agent1;
 Square agent2;
@@ -96,7 +98,6 @@ void chargeSquares(){
     agent2.color.setColor(0.3,0.2,0.8);
     agent2.setSizesXY(SIZE_SQUARE_W, SIZE_SQUARE_H);
 
-
 }
 
 //-----------------------------------------------
@@ -109,6 +110,7 @@ void display() {
     wall.draw();
     agent1.draw(SIZE_SQUARE_SMALL);
     agent2.draw(SIZE_SQUARE_SMALL);
+
     glutSwapBuffers();
 }
 
@@ -116,26 +118,21 @@ void display() {
 //            KEYBOARD EVENTS
 //-----------------------------------------------
 
-/*
-void keyboard(unsigned char key, int x, int y){
-    exit(0);
-}
-*/
 
 void ArrowKey(int key,int x,int y){
 
     switch (key){
         case GLUT_KEY_RIGHT:
-            agent1.moveRight();
+            if (maze.canMoveRight(agent1.position)) agent1.moveRight();
             break;
         case GLUT_KEY_LEFT:
-            agent1.moveLeft();
+            if (maze.canMoveLeft(agent1.position)) agent1.moveLeft();
             break;
         case GLUT_KEY_UP:
-            agent1.moveUp();
+            if (maze.canMoveUp(agent1.position)) agent1.moveUp();
             break;
         case GLUT_KEY_DOWN:
-            agent1.moveDown();
+            if (maze.canMoveDown(agent1.position)) agent1.moveDown();
             break;
         case 'z':
             exit(0);
