@@ -26,8 +26,8 @@
 #define MED_COLUMNS 6
 #define MED_ROWS 6
 #define SIZE_SQUARE_SMALL 2 // quant mes petit
-#define WIDTH 500
-#define HEIGHT 500
+#define WIDTH 700
+#define HEIGHT 700
 
 int COLUMNS = MED_COLUMNS * 2 + 1;
 int ROWS = MED_ROWS * 2 + 1;
@@ -118,21 +118,51 @@ void display() {
 //            KEYBOARD EVENTS
 //-----------------------------------------------
 
+void randomMove(){
+    int v1 = rand() % 4;   
+    
+    if (v1 == 0){
+        if (maze.canMoveLeft(agent2.position) && (agent2.position.x != agent1.position.x || agent2.position.y != agent1.position.y)) agent2.moveLeft();
+        else if (maze.canMoveDown(agent2.position) && (agent2.position.x != agent1.position.x || agent2.position.y != agent1.position.y)) agent2.moveDown();
+        else if (maze.canMoveRight(agent2.position) && (agent2.position.x != agent1.position.x || agent2.position.y != agent1.position.y)) agent2.moveRight() ;
+    }else if (v1 == 1){
+        if (maze.canMoveDown(agent2.position) && (agent2.position.x != agent1.position.x || agent2.position.y != agent1.position.y)) agent2.moveDown();
+        else if (maze.canMoveRight(agent2.position) && (agent2.position.x != agent1.position.x || agent2.position.y != agent1.position.y)) agent2.moveRight() ;
+        else if (maze.canMoveUp(agent2.position) && (agent2.position.x != agent1.position.x || agent2.position.y != agent1.position.y)) agent2.moveUp() ;
+    }else if (v1 == 2){
+        if (maze.canMoveRight(agent2.position) && (agent2.position.x != agent1.position.x || agent2.position.y != agent1.position.y)) agent2.moveRight() ;
+        else if (maze.canMoveUp(agent2.position) && (agent2.position.x != agent1.position.x || agent2.position.y != agent1.position.y)) agent2.moveUp() ;
+        else if (maze.canMoveLeft(agent2.position) && (agent2.position.x != agent1.position.x || agent2.position.y != agent1.position.y)) agent2.moveLeft();
+    }else if (v1 == 3){
+        if (maze.canMoveUp(agent2.position) && (agent2.position.x != agent1.position.x || agent2.position.y != agent1.position.y)) agent2.moveUp() ;
+        else if (maze.canMoveLeft(agent2.position) && (agent2.position.x != agent1.position.x || agent2.position.y != agent1.position.y)) agent2.moveLeft();
+        else if (maze.canMoveDown(agent2.position) && (agent2.position.x != agent1.position.x || agent2.position.y != agent1.position.y)) agent2.moveDown();
+    }  
+}
 
 void ArrowKey(int key,int x,int y){
 
     switch (key){
         case GLUT_KEY_RIGHT:
-            if (maze.canMoveRight(agent1.position)) agent1.moveRight();
+            //moviment jugador
+            if (maze.canMoveRight(agent1.position) && (agent2.position.x != agent1.position.x || agent2.position.y != agent1.position.y)) agent1.moveRight() ;
+            //moviment enemic
+            randomMove();
             break;
         case GLUT_KEY_LEFT:
-            if (maze.canMoveLeft(agent1.position)) agent1.moveLeft();
+            if (maze.canMoveLeft(agent1.position) && (agent2.position.x != agent1.position.x || agent2.position.y != agent1.position.y)) agent1.moveLeft();
+            //moviment enemic
+            randomMove();
             break;
         case GLUT_KEY_UP:
-            if (maze.canMoveUp(agent1.position)) agent1.moveUp();
+            if (maze.canMoveUp(agent1.position) && (agent2.position.x != agent1.position.x || agent2.position.y != agent1.position.y)) agent1.moveUp();
+            //moviment enemic
+            randomMove();
             break;
         case GLUT_KEY_DOWN:
-            if (maze.canMoveDown(agent1.position)) agent1.moveDown();
+            if (maze.canMoveDown(agent1.position) && (agent2.position.x != agent1.position.x || agent2.position.y != agent1.position.y)) agent1.moveDown();
+            //moviment enemic
+           randomMove();
             break;
         case 'z':
             exit(0);

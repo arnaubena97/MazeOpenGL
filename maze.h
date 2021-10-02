@@ -82,16 +82,16 @@ class Maze {
         
         bool canMoveUp(Point p){
             /* s'ha de pensar que el board el tenim girat respecte al dibuix grafic*/
-            return board[(int)p.x][(int)p.y+1] != '#' && board[(int)p.x][(int)p.y+1] != 'E';
+            return board[(int)p.x][(int)p.y+1] != '#';
         }
         bool canMoveDown(Point p){
-            return board[(int)p.x][(int)p.y-1] != '#' && board[(int)p.x+1][(int)p.y-1] != 'E';
+            return board[(int)p.x][(int)p.y-1] != '#';
         }
         bool canMoveLeft(Point p){
-            return board[(int)p.x-1][(int)p.y] != '#' && board[(int)p.x-1][(int)p.y] != 'E';
+            return board[(int)p.x-1][(int)p.y] != '#';
         }
         bool canMoveRight(Point p){
-            return board[(int)p.x+1][(int)p.y] != '#' && board[(int)p.x+1][(int)p.y] != 'E';
+            return board[(int)p.x+1][(int)p.y] != '#';
         }
     private:
         int med_columns;
