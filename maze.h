@@ -20,13 +20,15 @@ class Point{
 
 class Maze {     
     public:       
-        char **board;      
+        char **board;  // board of maze    
 
-        int columns;
-        int rows;
-
+        int columns; // num columns
+        int rows; // num rows
+        char agent1, agent2; // chars of the agents
         Maze(int med_columns1, int med_rows1)
         {
+            agent1 = 'S';
+            agent2 = 'E';
             med_columns = med_columns1;
             med_rows = med_rows1;
             columns = med_columns1 * 2 + 1;
@@ -37,6 +39,7 @@ class Maze {
             PutBeginEnd();
         }
         
+        // function to print maze on terminal
         void display() {
             for (int i = 0; i < columns; i++) {
                 for (int j = 0; j < rows; j++) {
@@ -46,6 +49,7 @@ class Maze {
             }
         }   
     
+        // return the number of walls of maze
         int getNumWalls(){
             int cnt = 0;
             for (int i = 0; i < columns ; i++) {
@@ -57,22 +61,21 @@ class Maze {
             }
             return cnt;
         }
-        
+        // functions to get the start point of agents
         Point getStartPoint(){
             for (int i = 0; i < columns; i++) {
                 for (int j = 0; j < rows; j++) {
-                    if (board[i][j] =='S'){
+                    if (board[i][j] ==agent1){
                         return Point(i, j);
                     }
                 }
             }
             return Point(0,0);
         }
-        
         Point getEndPoint(){
             for (int i = 0; i < columns; i++) {
                 for (int j = 0; j < rows; j++) {
-                    if (board[i][j] =='E'){
+                    if (board[i][j] ==agent2){
                         return Point(i, j);
                     }
                 }
@@ -80,25 +83,46 @@ class Maze {
             return Point(0,0);
         }
         
-        bool canMoveUp(Point p){
+        // functions to know if movement is possible
+        bool canMoveUp(Point p, char c){
             /* s'ha de pensar que el board el tenim girat respecte al dibuix grafic*/
-            return board[(int)p.x][(int)p.y+1] != '#';
+            return board[(int)p.x][(int)p.y+1] != '#' && board[(int)p.x][(int)p.y+1] != c;
         }
-        bool canMoveDown(Point p){
-            return board[(int)p.x][(int)p.y-1] != '#';
+        bool canMoveDown(Point p, char c){
+            return board[(int)p.x][(int)p.y-1] != '#' && board[(int)p.x][(int)p.y-1] != c;
         }
-        bool canMoveLeft(Point p){
-            return board[(int)p.x-1][(int)p.y] != '#';
+        bool canMoveLeft(Point p, char c){
+            return board[(int)p.x-1][(int)p.y] != '#' && board[(int)p.x-1][(int)p.y] != c;
         }
-        bool canMoveRight(Point p){
-            return board[(int)p.x+1][(int)p.y] != '#';
+        bool canMoveRight(Point p, char c){
+            return board[(int)p.x+1][(int)p.y] != '#' && board[(int)p.x+1][(int)p.y] != c;
         }
+        
+        // functions to update the board of maze
+        void updateUp(Point p, char c){
+            board[(int)p.x][(int)p.y] = ' ';
+            board[(int)p.x][(int)p.y+1] = c;
+        }
+        void updateDown(Point p, char c){
+            board[(int)p.x][(int)p.y] = ' ';
+            board[(int)p.x][(int)p.y-1] = c;
+        }
+        void updateLeft(Point p, char c){
+            board[(int)p.x][(int)p.y] = ' ';
+            board[(int)p.x-1][(int)p.y] = c;
+
+        }
+        void updateRight(Point p, char c){
+            board[(int)p.x][(int)p.y] = ' ';
+            board[(int)p.x+1][(int)p.y] = c;
+        }
+
     private:
         int med_columns;
         int med_rows;
         void PutBeginEnd(){
-            board[1][1] = 'S'; // coloquem la sortida S
-            board[columns-2][rows-2] = 'E'; // coloquem l'entrada E
+            board[1][1] = agent1; // coloquem la sortida S
+            board[columns-2][rows-2] = agent2; // coloquem l'entrada E
         }
 
         void ReserveMemory(){

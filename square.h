@@ -29,18 +29,16 @@ class RGB{
 
 class Square {     
     public:       
-        /*EXEMPLE*/
-        Point position;   //-- Current position
-        float vx,vy; //-- Velocity vector
-        int state;
+        Point position; // Current position
+        float vx,vy; // Velocity vector
+        int state; 
         long time_remaining;
-
-        /*UTILS*/
-        RGB color;
-        float size_x, size_y;
+        RGB color; 
+        float size_x, size_y; // size of square
         Square(){
             state = QUIET;
         }
+        
         void draw(int scale =0){
             //printf("x:%d y:%d sizex:%f sizey:%f \n", x, y , size_x, size_y);
             glColor3f(color.r,color.g,color.b);
@@ -55,6 +53,8 @@ class Square {
             size_y = y;
             size_x = x;
         }
+        
+        //functions to do the movement
         void changeState(){
             state==QUIET ? state = MOVE : state= QUIET;
         }
@@ -80,6 +80,7 @@ class Square {
                 }
         }
         
+        //functions to set the position of square
         void setPosition(float x, float y){
             position = Point(x,y);
         }
@@ -87,6 +88,7 @@ class Square {
             position = pos;
         }
 
+        //functions to move square 1 position
         void moveUp(){
             position.y = position.y + 1;
             init_movement(position.x,position.y,1000);
@@ -102,22 +104,21 @@ class Square {
         void moveRight(){
             position.x = position.x + 1;
             init_movement(position.x,position.y,1000);
-        }
-    //private:
-       
+        } 
 };
 
 class Walls {   
     RGB color;
-    float size_x, size_y; //size
-    Square *walls; 
-    int num_walls;
+    float size_x, size_y; // size squares
+    Square *walls; // array of squares wall
+    int num_walls; // num of squares wall
     public: 
         Walls(int num){
             color.setColor(0.5,0.5,0.5);
             num_walls = num;
             walls = new Square[num_walls];
         }
+        //set positions of all walls
         void setPositions(Maze m){
             int cnt =0;
             for (int i = 0; i < m.columns ; i++) {
@@ -133,11 +134,13 @@ class Walls {
                 }
             }
         }
+        // draw all squares wall
         void draw(int scale =0){
             for(int i = 0; i< num_walls; i++){
                 walls[i].draw(0);
             }
         }
+        //set sizes of squares wall
         void setSizesXY(float x, float y){
             size_y = y;
             size_x = x;
