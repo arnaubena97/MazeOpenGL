@@ -86,16 +86,98 @@ class Square {
         } 
 };
 
+class SquareWall {     
+    public:       
+        Point position; // Current position
+        RGB color; 
+        float size_x, size_y, size_z; // size of square
+        SquareWall(){
+        }
+
+        void setSizesXY(float x, float y, float z = 0){
+            size_y = y;
+            size_x = x;
+            size_z = z;
+        }
+        //functions to set the position of square
+        void setPosition(float x, float y, float z = 0){
+            position = Point(x,y,z);
+        }
+        void setPosition(Point pos){
+            position = pos;
+        }
+        void draw(){
+            GLfloat x = position.x * size_x;
+            GLfloat x1 = (position.x + 1) * size_x;
+            GLfloat y = position.y * size_y;
+            GLfloat y1 =(position.y + 1) * size_y;
+            GLfloat z = position.z * size_z;
+            GLfloat z1 = (position.z + 1) * size_z;
+            
+            glPolygonMode(GL_FRONT,GL_FILL);
+            glPolygonMode(GL_BACK,GL_LINE);
+
+
+            glColor3f(color.r,color.g,color.b);
+            glBegin(GL_QUADS); // BACK
+            glVertex3i(x,y,z);
+            glVertex3i(x1,y,z);
+            glVertex3i(x1,y1,z);
+            glVertex3i(x,y1,z);
+            glEnd();
+
+            glColor3f(color.r,color.g,color.b); // FRONT
+            glBegin(GL_QUADS);
+            glVertex3i(x,y1,z1);
+            glVertex3i(x1,y1,z1);
+            glVertex3i(x1,y,z1);
+            glVertex3i(x,y,z1);
+            glEnd();
+
+            glColor3f(color.r,color.g,color.b); //RIGHT
+            glBegin(GL_QUADS);
+            glVertex3i(x,y1,z);
+            glVertex3i(x,y1,z1);
+            glVertex3i(x,y,z1);
+            glVertex3i(x,y,z);
+            glEnd();
+
+            glColor3f(color.r,color.g,color.b); // LEFT
+            glBegin(GL_QUADS);
+            glVertex3i(x1,y,z);
+            glVertex3i(x1,y,z1);
+            glVertex3i(x1,y1,z1);
+            glVertex3i(x1,y1,z);
+            glEnd();
+
+            glColor3f(color.r,color.g,color.b); // TOP
+            glBegin(GL_QUADS);
+            glVertex3i(x,y,z);
+            glVertex3i(x,y,z1);
+            glVertex3i(x1,y,z1);
+            glVertex3i(x1,y,z);
+            glEnd();
+
+            glColor3f(color.r,color.g,color.b); // BOTTOM
+            glBegin(GL_QUADS);
+            glVertex3i(x,y1,z1);
+            glVertex3i(x,y1,z);
+            glVertex3i(x1,y1,z);
+            glVertex3i(x1,y1,z1);
+            glEnd();
+        }
+};
+
 class Walls {   
     RGB color;
-    float size_x, size_y; // size squares
-    Square *walls; // array of squares wall
+    float size_x, size_y, size_z; // size of square // size squares
+    SquareWall *walls; // array of squares wall
     int num_walls; // num of squares wall
     public: 
         Walls(int num){
             color.setColor(0.5,0.5,0.5);
             num_walls = num;
-            walls = new Square[num_walls];
+            walls = new SquareWall[num_walls];
         }
         //set positions of all walls
         void setPositions(Maze m){
@@ -103,11 +185,9 @@ class Walls {
             for (int i = 0; i < m.columns ; i++) {
                 for (int j = 0; j < m.rows; j++) {
                     if (m.board[i][j] =='#'){
-                        //printf("x:%d   y: %d  cnt: %d\n", i , j, cnt);
                         walls[cnt].setPosition(i, j);
-                        //printf("%f , %f \n", walls[cnt].x, walls[cnt].y);
                         walls[cnt].color = color;
-                        walls[cnt].setSizesXY(size_x,size_y);
+                        walls[cnt].setSizesXY(size_x,size_y, size_z);
                         cnt++;
                     }
                 }
@@ -116,14 +196,98 @@ class Walls {
         // draw all squares wall
         void draw(int scale =0){
             for(int i = 0; i< num_walls; i++){
-                walls[i].draw(0);
+                walls[i].draw();
             }
         }
         //set sizes of squares wall
-        void setSizesXY(float x, float y){
+        void setSizesXY(float x, float y, float z = 0){
             size_y = y;
             size_x = x;
+            size_z = z;
             
+        }
+};
+
+
+class Tank{     
+    public:       
+        Point position; // Current position
+        RGB color, colorWheels, colorTank, colorCanon; 
+        float size_x, size_y, size_z; // size of square
+        Tank(){
+        }
+
+        void setSizesXY(float x, float y, float z = 0){
+            size_y = y;
+            size_x = x;
+            size_z = z;
+        }
+        //functions to set the position of square
+        void setPosition(float x, float y, float z = 0){
+            position = Point(x,y,z);
+        }
+        void setPosition(Point pos){
+            position = pos;
+        }
+        void draw(){
+            GLfloat x = position.x * size_x;
+            GLfloat x1 = (position.x + 1) * size_x;
+            GLfloat y = position.y * size_y;
+            GLfloat y1 =(position.y + 1) * size_y;
+            GLfloat z = position.z * size_z;
+            GLfloat z1 = (position.z + 1) * size_z;
+            
+            glPolygonMode(GL_FRONT,GL_FILL);
+            glPolygonMode(GL_BACK,GL_LINE);
+
+
+            glColor3f(color.r,color.g,color.b);
+            glBegin(GL_QUADS); // BACK
+            glVertex3i(x,y,z);
+            glVertex3i(x1,y,z);
+            glVertex3i(x1,y1,z);
+            glVertex3i(x,y1,z);
+            glEnd();
+
+            glColor3f(color.r,color.g,color.b); // FRONT
+            glBegin(GL_QUADS);
+            glVertex3i(x,y1,z1);
+            glVertex3i(x1,y1,z1);
+            glVertex3i(x1,y,z1);
+            glVertex3i(x,y,z1);
+            glEnd();
+
+            glColor3f(color.r,color.g,color.b); //RIGHT
+            glBegin(GL_QUADS);
+            glVertex3i(x,y1,z);
+            glVertex3i(x,y1,z1);
+            glVertex3i(x,y,z1);
+            glVertex3i(x,y,z);
+            glEnd();
+
+            glColor3f(color.r,color.g,color.b); // LEFT
+            glBegin(GL_QUADS);
+            glVertex3i(x1,y,z);
+            glVertex3i(x1,y,z1);
+            glVertex3i(x1,y1,z1);
+            glVertex3i(x1,y1,z);
+            glEnd();
+
+            glColor3f(color.r,color.g,color.b); // TOP
+            glBegin(GL_QUADS);
+            glVertex3i(x,y,z);
+            glVertex3i(x,y,z1);
+            glVertex3i(x1,y,z1);
+            glVertex3i(x1,y,z);
+            glEnd();
+
+            glColor3f(color.r,color.g,color.b); // BOTTOM
+            glBegin(GL_QUADS);
+            glVertex3i(x,y1,z1);
+            glVertex3i(x,y1,z);
+            glVertex3i(x1,y1,z);
+            glVertex3i(x1,y1,z1);
+            glEnd();
         }
 };
 

@@ -35,6 +35,9 @@ int ROWS = MED_ROWS * 2 + 1;
 float SIZE_SQUARE_W = (float)WIDTH/(float)COLUMNS;
 float SIZE_SQUARE_H = (float)HEIGHT/(float)ROWS;
 
+int anglealpha = 0;
+int anglebeta = 0;
+
 Maze maze(MED_COLUMNS, MED_ROWS);
 
 Walls wall(maze.getNumWalls());
@@ -61,16 +64,58 @@ void idle();
 long last_t=0;
 Square square;
 
+#define PI 3.1416
+void PositionObserver(float alpha,float beta,int radi)
+{
+  float x,y,z;
+  float upx,upy,upz;
+  float modul;
+
+  x = (float)radi*cos(alpha*2*PI/360.0)*cos(beta*2*PI/360.0);
+  y = (float)radi*sin(beta*2*PI/360.0);
+  z = (float)radi*sin(alpha*2*PI/360.0)*cos(beta*2*PI/360.0);
+
+  if (beta>0)
+    {
+      upx=-x;
+      upz=-z;
+      upy=(x*x+z*z)/y;
+    }
+  else if(beta==0)
+    {
+      upx=0;
+      upy=1;
+      upz=0;
+    }
+  else
+    {
+      upx=x;
+      upz=z;
+      upy=-(x*x+z*z)/y;
+    }
+
+
+  modul=sqrt(upx*upx+upy*upy+upz*upz);
+
+  upx=upx/modul;
+  upy=upy/modul;
+  upz=upz/modul;
+
+  gluLookAt(x,y,z,    0.0, 0.0, 0.0,     upx,upy,upz);
+}
+
 int main(int argc,char *argv[])
 {
-
+    anglealpha=90;
+    anglebeta=30;
     chargeSquares();
 
     glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowPosition(700, 400);
     glutInitWindowSize(WIDTH, HEIGHT);
     glutCreateWindow("Maze board");
+    glEnable(GL_DEPTH_TEST);
         
     glutDisplayFunc(display);
     glutKeyboardFunc(keyboard);
@@ -78,8 +123,8 @@ int main(int argc,char *argv[])
 
     glutIdleFunc(idle);
 
-    glMatrixMode(GL_PROJECTION);
-    gluOrtho2D(0,WIDTH-1,0,HEIGHT-1);
+    //glMatrixMode(GL_PROJECTION);
+    //gluOrtho2D(0,WIDTH-1,0,HEIGHT-1);
 
     glutMainLoop();
     return 0;
@@ -90,9 +135,13 @@ int main(int argc,char *argv[])
 //-----------------------------------------------
 
 void chargeSquares(){
-    wall.setSizesXY(SIZE_SQUARE_W, SIZE_SQUARE_H);
+    wall.setSizesXY(SIZE_SQUARE_W, SIZE_SQUARE_H, 25);
     wall.setPositions(maze);
     
+
+
+
+
     start.setPosition(maze.getStartPoint());
     start.color.setColor(0.9,0.1,0.1);
     start.setSizesXY(SIZE_SQUARE_W, SIZE_SQUARE_H);
@@ -117,13 +166,26 @@ void chargeSquares(){
 //-----------------------------------------------
 
 void display() {
-    glClearColor(1.0,1.0,1.0,1.0);
-    glClear(GL_COLOR_BUFFER_BIT); 
+    glClearColor(1.0,1.0,1.0,0.0);
+    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+
+  PositionObserver(anglealpha,anglebeta,450);
+
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  glOrtho(-WIDTH*1.0,WIDTH*1.0,-HEIGHT*1.0,HEIGHT*1.0,10,1000);
+
+  glMatrixMode(GL_MODELVIEW);
+
+
     wall.draw(); // walls
-    start.draw(); //start point
-    endsa.draw(); // end point
-    agent1.draw(SIZE_SQUARE_SMALL); // agent user
-    agent2.draw(SIZE_SQUARE_SMALL); //agent pc
+    //start.draw(); //start point
+    //endsa.draw(); // end point
+    //agent1.draw(SIZE_SQUARE_SMALL); // agent user
+    //agent2.draw(SIZE_SQUARE_SMALL); //agent pc
 
     glutSwapBuffers();
 }
@@ -170,6 +232,16 @@ void keyboard(unsigned char key, int x, int y){
         exit(0);
         break;
     }
+
+      if (key=='i' && anglebeta<=(90-4))
+    anglebeta=(anglebeta+3);
+  else if (key=='k' && anglebeta>=(-90+4))
+    anglebeta=anglebeta-3;
+  else if (key=='j')
+    anglealpha=(anglealpha+3)%360;
+  else if (key=='l')
+    anglealpha=(anglealpha-3+360)%360;
+
     glutPostRedisplay();
 };
 

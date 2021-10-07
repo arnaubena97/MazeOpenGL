@@ -15,13 +15,15 @@ class RGB{
 
 class Point{
     public:
-    float x, y;
+    float x, y, z;
     Point(){
         this ->x = 0;
         this ->y = 0;
+        this ->z = 0;
     }
-    Point(float x , float y){
+    Point(float x , float y , float z = 0){
         this ->x = x;
         this ->y = y;
+        this ->z = z;
     }
 };
