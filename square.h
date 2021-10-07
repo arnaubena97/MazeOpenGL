@@ -32,11 +32,12 @@ class Square {
         Point position; // Current position
         float vx,vy; // Velocity vector
         int state; 
-        long time_remaining;
+        long time_remaining, time_mov;
         RGB color; 
         float size_x, size_y; // size of square
         Square(){
             state = QUIET;
+            time_mov= 3000;
         }
         
         void draw(int scale =0){
@@ -55,14 +56,15 @@ class Square {
         }
         
         //functions to do the movement
-        void changeState(){
+        /*void changeState(){
             state==QUIET ? state = MOVE : state= QUIET;
-        }
+        }*/
         void init_movement(int destination_x,int destination_y,int duration){
             vx = (destination_x - position.x)/duration;
             vy = (destination_y - position.y)/duration;
 
-            changeState();
+            //changeState();
+            state=MOVE;
             time_remaining=duration;
         }
         void integrate(long t){
@@ -91,19 +93,19 @@ class Square {
         //functions to move square 1 position
         void moveUp(){
             position.y = position.y + 1;
-            init_movement(position.x,position.y,1000);
+            init_movement(position.x,position.y,time_mov);
         }
         void moveDown(){
             position.y = position.y - 1;
-            init_movement(position.x,position.y,1000);
+            init_movement(position.x,position.y,time_mov);
         }
         void moveLeft(){
             position.x = position.x - 1;
-            init_movement(position.x,position.y,1000);
+            init_movement(position.x,position.y,time_mov);
         }
         void moveRight(){
             position.x = position.x + 1;
-            init_movement(position.x,position.y,1000);
+            init_movement(position.x,position.y,time_mov);
         } 
 };
 

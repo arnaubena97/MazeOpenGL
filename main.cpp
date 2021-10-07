@@ -40,6 +40,8 @@ Maze maze(MED_COLUMNS, MED_ROWS);
 Walls wall(maze.getNumWalls());
 
 //Square wall;
+Square start;
+Square endsa;
 Square agent1;
 Square agent2;
 
@@ -51,7 +53,7 @@ void display();
 void chargeSquares();
 void keyboard(unsigned char c,int x,int y);
 void ArrowKey(int key,int x,int y);
-
+void idle();
 
 //-----------------------------------------------
 //             MAIN PROCEDURE
@@ -61,18 +63,20 @@ Square square;
 
 int main(int argc,char *argv[])
 {
+
+    chargeSquares();
+
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
     glutInitWindowPosition(700, 400);
     glutInitWindowSize(WIDTH, HEIGHT);
     glutCreateWindow("Maze board");
         
-
-    chargeSquares();
-
     glutDisplayFunc(display);
     glutKeyboardFunc(keyboard);
     glutSpecialFunc(ArrowKey);
+
+    glutIdleFunc(idle);
 
     glMatrixMode(GL_PROJECTION);
     gluOrtho2D(0,WIDTH-1,0,HEIGHT-1);
@@ -89,12 +93,21 @@ void chargeSquares(){
     wall.setSizesXY(SIZE_SQUARE_W, SIZE_SQUARE_H);
     wall.setPositions(maze);
     
+    start.setPosition(maze.getStartPoint());
+    start.color.setColor(0.9,0.1,0.1);
+    start.setSizesXY(SIZE_SQUARE_W, SIZE_SQUARE_H);
+
+    endsa.setPosition(maze.getEndPoint());
+    endsa.color.setColor(0.1,0.9,0.1);
+    endsa.setSizesXY(SIZE_SQUARE_W, SIZE_SQUARE_H);
+
+
     agent1.setPosition(maze.getStartPoint());
-    agent1.color.setColor(0.8,0.2,0.8);
+    agent1.color.setColor(0.7,0.2,0.7);
     agent1.setSizesXY(SIZE_SQUARE_W, SIZE_SQUARE_H);
 
     agent2.setPosition(maze.getEndPoint());
-    agent2.color.setColor(0.3,0.2,0.8);
+    agent2.color.setColor(0.3,0.2,0.5);
     agent2.setSizesXY(SIZE_SQUARE_W, SIZE_SQUARE_H);
 
 }
@@ -107,6 +120,8 @@ void display() {
     glClearColor(1.0,1.0,1.0,1.0);
     glClear(GL_COLOR_BUFFER_BIT); 
     wall.draw();
+    start.draw();
+    endsa.draw();
     agent1.draw(SIZE_SQUARE_SMALL);
     agent2.draw(SIZE_SQUARE_SMALL);
 
@@ -164,6 +179,7 @@ void keyboard(unsigned char key, int x, int y){
         exit(0);
         break;
     }
+    glutPostRedisplay();
 };
 
 //-----------------------------------------------
@@ -179,7 +195,8 @@ void idle(){
     last_t=t;
   else
     {
-      square.integrate(t-last_t);
+      agent1.integrate(t-last_t);
+      agent2.integrate(t-last_t);
       last_t=t;
     }
 
