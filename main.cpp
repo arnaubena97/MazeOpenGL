@@ -15,7 +15,7 @@
     #include <GLUT/glut.h>
     #include <OpenGL/gl.h>
 #endif
-
+#include "extras.h"
 #include "maze.h"
 #include "square.h"
 
@@ -25,7 +25,7 @@
 
 #define MED_COLUMNS 6
 #define MED_ROWS 6
-#define SIZE_SQUARE_SMALL 2 // quant mes petit
+#define SIZE_SQUARE_SMALL 3 // quant mes petit
 #define WIDTH 700
 #define HEIGHT 700
 
@@ -103,11 +103,11 @@ void chargeSquares(){
 
 
     agent1.setPosition(maze.getStartPoint());
-    agent1.color.setColor(0.7,0.2,0.7);
+    agent1.color.setColor(1,0.7,0);
     agent1.setSizesXY(SIZE_SQUARE_W, SIZE_SQUARE_H);
 
     agent2.setPosition(maze.getEndPoint());
-    agent2.color.setColor(0.3,0.2,0.5);
+    agent2.color.setColor(0.3,0.2,0.6);
     agent2.setSizesXY(SIZE_SQUARE_W, SIZE_SQUARE_H);
 
 }
@@ -119,11 +119,11 @@ void chargeSquares(){
 void display() {
     glClearColor(1.0,1.0,1.0,1.0);
     glClear(GL_COLOR_BUFFER_BIT); 
-    wall.draw();
-    start.draw();
-    endsa.draw();
-    agent1.draw(SIZE_SQUARE_SMALL);
-    agent2.draw(SIZE_SQUARE_SMALL);
+    wall.draw(); // walls
+    start.draw(); //start point
+    endsa.draw(); // end point
+    agent1.draw(SIZE_SQUARE_SMALL); // agent user
+    agent2.draw(SIZE_SQUARE_SMALL); //agent pc
 
     glutSwapBuffers();
 }
@@ -131,51 +131,42 @@ void display() {
 //-----------------------------------------------
 //            KEYBOARD EVENTS
 //-----------------------------------------------
-
 void ArrowKey(int key,int x,int y){
 
-    switch (key){
-        case GLUT_KEY_RIGHT:
-            //moviment jugador
-            if (maze.canMoveRight(agent1.position,maze.agent2)){
-                maze.updateRight(agent1.position, maze.agent1); 
-                agent1.moveRight();
-            } 
-            //moviment enemic
-            randomMove();
-            break;
-        case GLUT_KEY_LEFT:
-            if (maze.canMoveLeft(agent1.position,maze.agent2)){
-                maze.updateLeft(agent1.position, maze.agent1);
-                agent1.moveLeft(); 
-            }
-            //moviment enemic
-            randomMove();
-            break;
-        case GLUT_KEY_UP:
-            if (maze.canMoveUp(agent1.position,maze.agent2)){
-                maze.updateUp(agent1.position, maze.agent1);
-                agent1.moveUp();
-            }
-            //moviment enemic
-            randomMove();
-            break;
-        case GLUT_KEY_DOWN:
-            if (maze.canMoveDown(agent1.position,maze.agent2)){
-                maze.updateDown(agent1.position, maze.agent1); 
-                agent1.moveDown(); 
-            }
-            //moviment enemic
-           randomMove();
-            break;
-    }
-
+        switch (key){
+            case GLUT_KEY_RIGHT:
+                //moviment jugador
+                if (maze.canMoveRight(agent1.position,maze.agent2) && agent1.state==QUIET){
+                    maze.updateRight(agent1.position, maze.agent1); 
+                    agent1.moveRight();
+                } 
+                break;
+            case GLUT_KEY_LEFT:
+                if (maze.canMoveLeft(agent1.position,maze.agent2) && agent1.state==QUIET){
+                    maze.updateLeft(agent1.position, maze.agent1);
+                    agent1.moveLeft(); 
+                }
+                break;
+            case GLUT_KEY_UP:
+                if (maze.canMoveUp(agent1.position,maze.agent2) && agent1.state==QUIET){
+                    maze.updateUp(agent1.position, maze.agent1);
+                    agent1.moveUp();
+                }
+                break;
+            case GLUT_KEY_DOWN:
+                if (maze.canMoveDown(agent1.position,maze.agent2) && agent1.state==QUIET){
+                    maze.updateDown(agent1.position, maze.agent1); 
+                    agent1.moveDown(); 
+                }
+                break;
+        }
+    
     glutPostRedisplay();
 };
 
 void keyboard(unsigned char key, int x, int y){
     switch (key) {
-        case 27:
+        case 27: // exit with ESC
         exit(0);
         break;
     }
@@ -187,21 +178,19 @@ void keyboard(unsigned char key, int x, int y){
 //-----------------------------------------------
 
 void idle(){
-  long t;
+    long t;
+    randomMove();
+    t=glutGet(GLUT_ELAPSED_TIME); 
 
-  t=glutGet(GLUT_ELAPSED_TIME); 
-
-  if(last_t==0)
-    last_t=t;
-  else
-    {
-      agent1.integrate(t-last_t);
-      agent2.integrate(t-last_t);
-      last_t=t;
+    if(last_t==0)
+        last_t=t;
+    else{
+        agent1.integrate(t-last_t);
+        agent2.integrate(t-last_t);
+        last_t=t;
     }
 
-
-  glutPostRedisplay();
+    glutPostRedisplay();
 }
 
 //-----------------------------------------------
@@ -212,36 +201,37 @@ void randomMove(){
     bool m1,m2,m3,m4; // controlar si es queda tancat, sino -> while(true)
     int v1;
     int flag = 0;
-    while(flag!=1 && !(m1&&m2&&m3&&m4)){  
-        v1 = rand() % 4;
-        if (v1 == 0){
-            if (maze.canMoveLeft(agent2.position, maze.agent1)){
-                maze.updateLeft(agent2.position, maze.agent2);
-                agent2.moveLeft();
-                flag =1;
-            }
-            m1 = true;
-        }else if (v1 == 1){
-            if (maze.canMoveDown(agent2.position, maze.agent1)){
-                maze.updateDown(agent2.position, maze.agent2); 
-                agent2.moveDown();
-                flag =1;
-            } 
-            m2 = true;
-        }else if (v1 == 2){
-            if (maze.canMoveRight(agent2.position, maze.agent1)){
-                maze.updateRight(agent2.position, maze.agent2);
-                agent2.moveRight();
-                flag =1;
-            } 
-            m3 = true;
-        }else if (v1 == 3){
-            if (maze.canMoveUp(agent2.position, maze.agent1)){
-                maze.updateUp(agent2.position, maze.agent2);
-                agent2.moveUp();
-                flag =1;
-            } 
-            m4 = true;
-        }  
-    }
+        while(flag!=1 && !(m1&&m2&&m3&&m4)){  
+            v1 = rand() % 4;
+            if (v1 == 0){
+                if (maze.canMoveLeft(agent2.position, maze.agent1) && agent2.state==QUIET){
+                    maze.updateLeft(agent2.position, maze.agent2);
+                    agent2.moveLeft();
+                    flag =1;
+                }
+                m1 = true;
+            }else if (v1 == 1){
+                if (maze.canMoveDown(agent2.position, maze.agent1) && agent2.state==QUIET){
+                    maze.updateDown(agent2.position, maze.agent2); 
+                    agent2.moveDown();
+                    flag =1;
+                } 
+                m2 = true;
+            }else if (v1 == 2){
+                if (maze.canMoveRight(agent2.position, maze.agent1) && agent2.state==QUIET){
+                    maze.updateRight(agent2.position, maze.agent2);
+                    agent2.moveRight();
+                    flag =1;
+                } 
+                m3 = true;
+            }else if (v1 == 3){
+                if (maze.canMoveUp(agent2.position, maze.agent1) && agent2.state==QUIET){
+                    maze.updateUp(agent2.position, maze.agent2);
+                    agent2.moveUp();
+                    flag =1;
+                } 
+                m4 = true;
+            }  
+        }
+    
 }

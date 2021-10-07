@@ -5,18 +5,7 @@
 #include <tuple> 
 using namespace std;
 
-class Point{
-    public:
-    float x, y;
-    Point(){
-        this ->x = 0;
-        this ->y = 0;
-    }
-    Point(float x , float y){
-        this ->x = x;
-        this ->y = y;
-    }
-};
+
 
 class Maze {     
     public:       
@@ -25,14 +14,18 @@ class Maze {
         int columns; // num columns
         int rows; // num rows
         char agent1, agent2; // chars of the agents
+        Point startPosition, endPosition;
         Maze(int med_columns1, int med_rows1)
         {
             agent1 = 'S';
             agent2 = 'E';
+
             med_columns = med_columns1;
             med_rows = med_rows1;
             columns = med_columns1 * 2 + 1;
             rows = med_rows1 * 2 + 1;
+            startPosition = Point(1.0, 1.0);
+            endPosition= Point(columns - 2,rows -2);
             ReserveMemory();
             PutExteriorWalls();
             PutInteriorWalls();
@@ -110,7 +103,6 @@ class Maze {
         void updateLeft(Point p, char c){
             board[(int)p.x][(int)p.y] = ' ';
             board[(int)p.x-1][(int)p.y] = c;
-
         }
         void updateRight(Point p, char c){
             board[(int)p.x][(int)p.y] = ' ';
@@ -121,8 +113,8 @@ class Maze {
         int med_columns;
         int med_rows;
         void PutBeginEnd(){
-            board[1][1] = agent1; // coloquem la sortida S
-            board[columns-2][rows-2] = agent2; // coloquem l'entrada E
+            board[(int)startPosition.x][(int)startPosition.y] = agent1; // coloquem la sortida S
+            board[(int)endPosition.x][(int)endPosition.y] = agent2; // coloquem l'entrada E
         }
 
         void ReserveMemory(){

@@ -12,20 +12,7 @@ using namespace std;
 #define MOVE 1
 #define QUIET 2
 
-class RGB{
-    public:    
-        float r,g,b;
-        void setColor(float x, float y, float z){
-            r=x;
-            g=y;
-            b=z;
-        }
-        void setColor(RGB color){
-            r=color.r;
-            g=color.g;
-            b=color.b;
-        }
-};
+
 
 class Square {     
     public:       
@@ -37,7 +24,7 @@ class Square {
         float size_x, size_y; // size of square
         Square(){
             state = QUIET;
-            time_mov= 3000;
+            time_mov= 300;
         }
         
         void draw(int scale =0){
@@ -55,15 +42,9 @@ class Square {
             size_x = x;
         }
         
-        //functions to do the movement
-        /*void changeState(){
-            state==QUIET ? state = MOVE : state= QUIET;
-        }*/
         void init_movement(int destination_x,int destination_y,int duration){
             vx = (destination_x - position.x)/duration;
             vy = (destination_y - position.y)/duration;
-
-            //changeState();
             state=MOVE;
             time_remaining=duration;
         }
@@ -76,8 +57,8 @@ class Square {
                 }
             else if(state==MOVE && t>=time_remaining)
                 {
-                position.x = position.x + vx*time_remaining;
-                position.y = position.y + vy*time_remaining;
+                position.x = roundf(position.x + vx*time_remaining);
+                position.y = roundf(position.y + vy*time_remaining);
                 state=QUIET;
                 }
         }
@@ -92,20 +73,16 @@ class Square {
 
         //functions to move square 1 position
         void moveUp(){
-            position.y = position.y + 1;
-            init_movement(position.x,position.y,time_mov);
+            init_movement(position.x,position.y +1,time_mov);
         }
         void moveDown(){
-            position.y = position.y - 1;
-            init_movement(position.x,position.y,time_mov);
+            init_movement(position.x,position.y -1,time_mov);
         }
         void moveLeft(){
-            position.x = position.x - 1;
-            init_movement(position.x,position.y,time_mov);
+            init_movement(position.x-1,position.y,time_mov);
         }
         void moveRight(){
-            position.x = position.x + 1;
-            init_movement(position.x,position.y,time_mov);
+            init_movement(position.x+1,position.y,time_mov);
         } 
 };
 
