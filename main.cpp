@@ -270,7 +270,7 @@ void idle(){
 //-----------------------------------------------
 //            RANDOM MOVE
 //-----------------------------------------------
-
+//comit
 void randomMove(){
     bool m1,m2,m3,m4; // controlar si es queda tancat, sino -> while(true)
     int v1;
