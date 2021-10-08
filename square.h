@@ -178,6 +178,7 @@ class Walls {
             color.setColor(0.5,0.5,0.5);
             num_walls = num;
             walls = new SquareWall[num_walls];
+            
         }
         //set positions of all walls
         void setPositions(Maze m){
@@ -204,7 +205,15 @@ class Walls {
             size_y = y;
             size_x = x;
             size_z = z;
-            
+        }
+        void drawFloor(float x, float y){
+            glColor3f(1.0,1.0,1.0);
+            glBegin(GL_QUADS);
+            glVertex3i(0,0,0);//vertex baix esquerra
+            glVertex3i(0,0,y);//vertex baix dreta
+            glVertex3i(x,0,y);//vertex dalt dreta
+            glVertex3i(x,0,0);//vertex dalt esquerra
+            glEnd();
         }
 };
 

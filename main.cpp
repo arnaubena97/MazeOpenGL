@@ -26,8 +26,8 @@
 #define MED_COLUMNS 6
 #define MED_ROWS 6
 #define SIZE_SQUARE_SMALL 3 // quant mes petit
-#define WIDTH 300
-#define HEIGHT 300
+#define WIDTH 700
+#define HEIGHT 700
 
 int COLUMNS = MED_COLUMNS * 2 + 1;
 int ROWS = MED_ROWS * 2 + 1;
@@ -137,7 +137,6 @@ int main(int argc,char *argv[])
 void chargeSquares(){
     wall.setSizesXY(SIZE_SQUARE_W, SIZE_SQUARE_H, 25);
     wall.setPositions(maze);
-    
 
     tankUser.setSizesXY(SIZE_SQUARE_W, SIZE_SQUARE_H, 60);
     tankUser.color.setColor(0.1,1,0.1);
@@ -167,7 +166,7 @@ void chargeSquares(){
 //-----------------------------------------------
 
 void display() {
-    glClearColor(1.0,1.0,1.0,0.0);
+    glClearColor(0.8,0.8,0.8,0.0);
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
   glMatrixMode(GL_MODELVIEW);
@@ -183,6 +182,7 @@ void display() {
 
 
     wall.draw(); // walls
+    wall.drawFloor(HEIGHT, WIDTH);
     //tankUser.drawWheels();
     //start.draw(); //start point
     //endsa.draw(); // end point
