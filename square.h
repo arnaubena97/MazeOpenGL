@@ -120,50 +120,50 @@ class SquareWall {
 
             glColor3f(1,0,1);
             glBegin(GL_QUADS); // BACK
-            glVertex3i(x,y,z);
             glVertex3i(x1,y,z);
-            glVertex3i(x1,y1,z);
+            glVertex3i(x,y,z);
             glVertex3i(x,y1,z);
+            glVertex3i(x1,y1,z);
             glEnd();
 
             glColor3f(1,0,0); // FRONT
             glBegin(GL_QUADS);
-            glVertex3i(x,y1,z1);
             glVertex3i(x1,y1,z1);
-            glVertex3i(x1,y,z1);
+            glVertex3i(x,y1,z1);
             glVertex3i(x,y,z1);
+            glVertex3i(x1,y,z1);
             glEnd();
 
             glColor3f(0,1,0); //RIGHT
             glBegin(GL_QUADS);
-            glVertex3i(x,y1,z);
             glVertex3i(x,y1,z1);
-            glVertex3i(x,y,z1);
+            glVertex3i(x,y1,z);
             glVertex3i(x,y,z);
+            glVertex3i(x,y,z1);
             glEnd();
 
             glColor3f(0,0,1); // LEFT
             glBegin(GL_QUADS);
-            glVertex3i(x1,y,z);
             glVertex3i(x1,y,z1);
-            glVertex3i(x1,y1,z1);
+            glVertex3i(x1,y,z);
             glVertex3i(x1,y1,z);
+            glVertex3i(x1,y1,z1);
             glEnd();
 
             glColor3f(0.5,0.5,0.5); // TOP
             glBegin(GL_QUADS);
-            glVertex3i(x,y,z);
             glVertex3i(x,y,z1);
-            glVertex3i(x1,y,z1);
+            glVertex3i(x,y,z);
             glVertex3i(x1,y,z);
+            glVertex3i(x1,y,z1);
             glEnd();
 
             glColor3f(0.3,0.6,0.7); // BOTTOM
             glBegin(GL_QUADS);
-            glVertex3i(x,y1,z1);
             glVertex3i(x,y1,z);
-            glVertex3i(x1,y1,z);
+            glVertex3i(x,y1,z1);
             glVertex3i(x1,y1,z1);
+            glVertex3i(x1,y1,z);
             glEnd();
         }
 };
