@@ -26,8 +26,8 @@
 #define MED_COLUMNS 6
 #define MED_ROWS 6
 #define SIZE_SQUARE_SMALL 3 // quant mes petit
-#define WIDTH 700
-#define HEIGHT 700
+#define WIDTH 300
+#define HEIGHT 300
 
 int COLUMNS = MED_COLUMNS * 2 + 1;
 int ROWS = MED_ROWS * 2 + 1;
@@ -47,7 +47,7 @@ Square start;
 Square endsa;
 Square agent1;
 Square agent2;
-
+Tank tankUser;
 //-----------------------------------------------
 //                FUNCTIONS
 //-----------------------------------------------
@@ -101,7 +101,7 @@ void PositionObserver(float alpha,float beta,int radi)
   upy=upy/modul;
   upz=upz/modul;
 
-  gluLookAt(x,y,z,    0.0, 0.0, 0.0,     upx,upy,upz);
+  gluLookAt(x,y,z,    WIDTH/2.0,20.0, HEIGHT/2.0,    upx,upy,upz);
 }
 
 int main(int argc,char *argv[])
@@ -139,8 +139,9 @@ void chargeSquares(){
     wall.setPositions(maze);
     
 
-
-
+    tankUser.setSizesXY(SIZE_SQUARE_W, SIZE_SQUARE_H, 60);
+    tankUser.color.setColor(0.1,1,0.1);
+    tankUser.setPosition(maze.getStartPoint());
 
     start.setPosition(maze.getStartPoint());
     start.color.setColor(0.9,0.1,0.1);
@@ -172,16 +173,17 @@ void display() {
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
 
-  PositionObserver(anglealpha,anglebeta,450);
+  PositionObserver(anglealpha,anglebeta,1000);
 
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-  glOrtho(-WIDTH*1.0,WIDTH*1.0,-HEIGHT*1.0,HEIGHT*1.0,10,1000);
-
+  glOrtho(-WIDTH*1.0,WIDTH*1.0,-HEIGHT*1.0,HEIGHT*1.0,10,2000);
+    //glOrtho(-WIDTH*1.0,WIDTH*1.0,-HEIGHT*1.0,HEIGHT*1.0,10,1000);
   glMatrixMode(GL_MODELVIEW);
 
 
     wall.draw(); // walls
+    //tankUser.drawWheels();
     //start.draw(); //start point
     //endsa.draw(); // end point
     //agent1.draw(SIZE_SQUARE_SMALL); // agent user

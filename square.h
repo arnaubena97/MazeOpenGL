@@ -109,16 +109,16 @@ class SquareWall {
         void draw(){
             GLfloat x = position.x * size_x;
             GLfloat x1 = (position.x + 1) * size_x;
-            GLfloat y = position.y * size_y;
-            GLfloat y1 =(position.y + 1) * size_y;
-            GLfloat z = position.z * size_z;
-            GLfloat z1 = (position.z + 1) * size_z;
+            GLfloat z = position.y * size_y;
+            GLfloat z1 =(position.y + 1) * size_y;
+            GLfloat y = position.z * size_z;
+            GLfloat y1 = (position.z + 1) * size_z;
             
             glPolygonMode(GL_FRONT,GL_FILL);
             glPolygonMode(GL_BACK,GL_LINE);
 
 
-            glColor3f(color.r,color.g,color.b);
+            glColor3f(1,0,1);
             glBegin(GL_QUADS); // BACK
             glVertex3i(x,y,z);
             glVertex3i(x1,y,z);
@@ -126,7 +126,7 @@ class SquareWall {
             glVertex3i(x,y1,z);
             glEnd();
 
-            glColor3f(color.r,color.g,color.b); // FRONT
+            glColor3f(1,0,0); // FRONT
             glBegin(GL_QUADS);
             glVertex3i(x,y1,z1);
             glVertex3i(x1,y1,z1);
@@ -134,7 +134,7 @@ class SquareWall {
             glVertex3i(x,y,z1);
             glEnd();
 
-            glColor3f(color.r,color.g,color.b); //RIGHT
+            glColor3f(0,1,0); //RIGHT
             glBegin(GL_QUADS);
             glVertex3i(x,y1,z);
             glVertex3i(x,y1,z1);
@@ -142,7 +142,7 @@ class SquareWall {
             glVertex3i(x,y,z);
             glEnd();
 
-            glColor3f(color.r,color.g,color.b); // LEFT
+            glColor3f(0,0,1); // LEFT
             glBegin(GL_QUADS);
             glVertex3i(x1,y,z);
             glVertex3i(x1,y,z1);
@@ -150,7 +150,7 @@ class SquareWall {
             glVertex3i(x1,y1,z);
             glEnd();
 
-            glColor3f(color.r,color.g,color.b); // TOP
+            glColor3f(0.5,0.5,0.5); // TOP
             glBegin(GL_QUADS);
             glVertex3i(x,y,z);
             glVertex3i(x,y,z1);
@@ -158,7 +158,7 @@ class SquareWall {
             glVertex3i(x1,y,z);
             glEnd();
 
-            glColor3f(color.r,color.g,color.b); // BOTTOM
+            glColor3f(0.3,0.6,0.7); // BOTTOM
             glBegin(GL_QUADS);
             glVertex3i(x,y1,z1);
             glVertex3i(x,y1,z);
@@ -229,6 +229,82 @@ class Tank{
         void setPosition(Point pos){
             position = pos;
         }
+
+        void drawWheels(){
+            GLfloat x0 = position.x * size_x;
+            GLfloat x1 = (position.x + 0.125)* size_x;
+            GLfloat x2 = (position.x + 0.25) * size_x;
+            GLfloat x3 = (position.x + 0.375) * size_x;
+            GLfloat x4 = (position.x + 0.5) * size_x;
+            GLfloat x5 = (position.x + 0.625) * size_x;
+            GLfloat x6 = (position.x + 0.75)* size_x;
+            GLfloat x7= (position.x + 0.875)* size_x;
+            GLfloat x8 = (position.x + 1) * size_x;
+            
+            GLfloat y0 = position.y * size_y;
+            GLfloat y1 = (position.y + 0.25) * size_y;
+            GLfloat y2 = (position.y + 0.5) * size_y;
+            GLfloat y3 = (position.y + 0.75)* size_y;
+            GLfloat y4 = (position.y + 1) * size_y;
+
+            GLfloat z0 = position.z * size_z;
+            GLfloat z1 = (position.z + (1.0/6.0)) * size_z;
+            GLfloat z2 = (position.z + (1.0/3.0)) * size_z;
+            GLfloat z3 = (position.z + (5.0/6.0)) * size_z;
+            GLfloat z4 = (position.z + 1) * size_z;
+
+            glPolygonMode(GL_FRONT,GL_FILL);
+            glPolygonMode(GL_BACK,GL_LINE);
+
+            
+
+            glColor3f(color.r,color.g,color.b);
+            glBegin(GL_QUADS); // xapa1
+            glVertex3i(x1,y0,z0);
+            glVertex3i(x0,y0,z2);
+            glVertex3i(x0,y1,z2);
+            glVertex3i(x1,y1,z0);
+            
+            glEnd();
+
+            glColor3f(color.r,color.g,color.b);
+            glBegin(GL_QUADS); // xapa2
+            glVertex3i(x0,y0,z2);
+            glVertex3i(x8,y0,z2);
+            glVertex3i(x8,y1,z2);
+            glVertex3i(x0,y1,z2);
+            glEnd();
+
+            glColor3f(color.r,color.g,color.b);
+            glBegin(GL_QUADS); // xapa1
+            glVertex3i(x7,y0,z0);
+            glVertex3i(x1,y0,z0);
+            glVertex3i(x1,y1,z0);
+            glVertex3i(x7,y1,z0);
+            
+
+            glEnd();
+            glColor3f(color.r,color.g,color.b);
+            glBegin(GL_QUADS); // xapa1
+            glVertex3i(x8,y0,z2);
+            glVertex3i(x7,y0,z0);
+            glVertex3i(x7,y1,z0);
+            glVertex3i(x8,y1,z2);
+            glEnd();
+
+            glColor3f(color.r,color.g,color.b);
+            glBegin(GL_QUADS); // xapa1
+            glVertex3i(x1,y1,z0);
+            glVertex3i(x0,y1,z2);
+            glVertex3i(x8,y1,z2);
+            glVertex3i(x7,y1,z0);
+            
+            glEnd();
+
+
+
+
+        }
         void draw(){
             GLfloat x = position.x * size_x;
             GLfloat x1 = (position.x + 1) * size_x;
@@ -239,7 +315,6 @@ class Tank{
             
             glPolygonMode(GL_FRONT,GL_FILL);
             glPolygonMode(GL_BACK,GL_LINE);
-
 
             glColor3f(color.r,color.g,color.b);
             glBegin(GL_QUADS); // BACK
