@@ -37,7 +37,7 @@ float SIZE_SQUARE_H = (float)HEIGHT/(float)ROWS;
 
 int anglealpha = 0;
 int anglebeta = 0;
-
+float zoomfactor = 1.0;
 Maze maze(MED_COLUMNS, MED_ROWS);
 
 Walls wall(maze.getNumWalls());
@@ -138,7 +138,7 @@ void chargeSquares(){
     wall.setSizesXY(SIZE_SQUARE_W, SIZE_SQUARE_H, 25);
     wall.setPositions(maze);
 
-    tankUser.setSizesXY(SIZE_SQUARE_W, SIZE_SQUARE_H, 60);
+    tankUser.setSizesXY(SIZE_SQUARE_W, SIZE_SQUARE_H, 50);
     tankUser.color.setColor(0.1,1,0.1);
     tankUser.setPosition(maze.getStartPoint());
 
@@ -169,21 +169,21 @@ void display() {
     glClearColor(0.8,0.8,0.8,0.0);
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
-  glMatrixMode(GL_MODELVIEW);
-  glLoadIdentity();
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
 
-  PositionObserver(anglealpha,anglebeta,1000);
+    PositionObserver(anglealpha,anglebeta,1000);
 
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-  glOrtho(-WIDTH*1.0,WIDTH*1.0,-HEIGHT*1.0,HEIGHT*1.0,10,2000);
-    //glOrtho(-WIDTH*1.0,WIDTH*1.0,-HEIGHT*1.0,HEIGHT*1.0,10,1000);
-  glMatrixMode(GL_MODELVIEW);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(-(WIDTH*zoomfactor),WIDTH*zoomfactor,-(HEIGHT*zoomfactor),HEIGHT*zoomfactor,100,2000);
+
+    glMatrixMode(GL_MODELVIEW);
 
 
     wall.draw(); // walls
     wall.drawFloor(HEIGHT, WIDTH);
-    //tankUser.drawWheels();
+    tankUser.draw();
     //start.draw(); //start point
     //endsa.draw(); // end point
     //agent1.draw(SIZE_SQUARE_SMALL); // agent user
@@ -235,15 +235,18 @@ void keyboard(unsigned char key, int x, int y){
         break;
     }
 
-      if (key=='i' && anglebeta<=(90-4))
-    anglebeta=(anglebeta+3);
-  else if (key=='k' && anglebeta>=(-90+4))
-    anglebeta=anglebeta-3;
-  else if (key=='j')
-    anglealpha=(anglealpha+3)%360;
-  else if (key=='l')
-    anglealpha=(anglealpha-3+360)%360;
-
+    if (key=='i' && anglebeta<=(90-4))
+        anglebeta=(anglebeta+3);
+    else if (key=='k' && anglebeta>=(-90+4))
+        anglebeta=anglebeta-3;
+    else if (key=='j')
+        anglealpha=(anglealpha+3)%360;
+    else if (key=='l')
+        anglealpha=(anglealpha-3+360)%360;
+    else if (key=='o')
+        zoomfactor -= 0.1;
+    else if (key=='p')
+        zoomfactor += 0.1;
     glutPostRedisplay();
 };
 

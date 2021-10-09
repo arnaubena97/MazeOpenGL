@@ -239,7 +239,8 @@ class Tank{
             position = pos;
         }
 
-        void drawWheels(){
+        void draw(){
+
             GLfloat x0 = position.x * size_x;
             GLfloat x1 = (position.x + 0.125)* size_x;
             GLfloat x2 = (position.x + 0.25) * size_x;
@@ -250,128 +251,246 @@ class Tank{
             GLfloat x7= (position.x + 0.875)* size_x;
             GLfloat x8 = (position.x + 1) * size_x;
             
-            GLfloat y0 = position.y * size_y;
-            GLfloat y1 = (position.y + 0.25) * size_y;
-            GLfloat y2 = (position.y + 0.5) * size_y;
-            GLfloat y3 = (position.y + 0.75)* size_y;
-            GLfloat y4 = (position.y + 1) * size_y;
+            GLfloat z0 = position.y * size_y;
+            GLfloat z1 = (position.y + 0.25) * size_y;
+            GLfloat z2 = (position.y + 0.5) * size_y;
+            GLfloat z3 = (position.y + 0.75)* size_y;
+            GLfloat z4 = (position.y + 1) * size_y;
 
-            GLfloat z0 = position.z * size_z;
-            GLfloat z1 = (position.z + (1.0/6.0)) * size_z;
-            GLfloat z2 = (position.z + (1.0/3.0)) * size_z;
-            GLfloat z3 = (position.z + (5.0/6.0)) * size_z;
-            GLfloat z4 = (position.z + 1) * size_z;
+            GLfloat y0 = position.z * size_z;
+            GLfloat y1 = (position.z + (1.0/6.0)) * size_z;
+            GLfloat y2 = (position.z + (1.0/3.0)) * size_z;
+            GLfloat y3 = (position.z + (5.0/6.0)) * size_z;
+            GLfloat y4 = (position.z + 1) * size_z;
 
             glPolygonMode(GL_FRONT,GL_FILL);
             glPolygonMode(GL_BACK,GL_LINE);
+            drawWheelsL(x0, x1, x2, x4, x6, x7, x8, y0, y1, y2, z0, z1);
+            drawWheelsR(x0, x1, x2, x4, x6, x7, x8, y0, y1, y2, z3, z4);
+            drawBody(x1,x7,y1,y3,z1,z3);
+            drawCanon(x4,x0,z0,z1,z2,y1,y3,y4);
+        }
 
-            
+        void drawWheelsL(GLfloat x0, GLfloat x1, GLfloat x2,GLfloat x4,
+                        GLfloat x6, GLfloat x7, GLfloat x8, GLfloat y0,
+                        GLfloat y1, GLfloat y2, GLfloat z0,GLfloat z1){
 
-            glColor3f(color.r,color.g,color.b);
-            glBegin(GL_QUADS); // xapa1
+            glColor3f(1,0,0);
+            glBegin(GL_QUADS); // xapa1 fora
+            glVertex3i(x0,y2,z0);
             glVertex3i(x1,y0,z0);
-            glVertex3i(x0,y0,z2);
-            glVertex3i(x0,y1,z2);
-            glVertex3i(x1,y1,z0);
-            
+            glVertex3i(x1,y0,z1);
+            glVertex3i(x0,y2,z1);
             glEnd();
 
-            glColor3f(color.r,color.g,color.b);
-            glBegin(GL_QUADS); // xapa2
-            glVertex3i(x0,y0,z2);
-            glVertex3i(x8,y0,z2);
-            glVertex3i(x8,y1,z2);
-            glVertex3i(x0,y1,z2);
+            glColor3f(0,1,0);
+            glBegin(GL_QUADS); // xapa2 fora
+            glVertex3i(x8,y2,z0);
+            glVertex3i(x0,y2,z0);
+            glVertex3i(x0,y2,z1);
+            glVertex3i(x8,y2,z1);
             glEnd();
 
-            glColor3f(color.r,color.g,color.b);
-            glBegin(GL_QUADS); // xapa1
-            glVertex3i(x7,y0,z0);
+            glColor3f(0,0,1);
+            glBegin(GL_QUADS); // xapa3 fora
             glVertex3i(x1,y0,z0);
-            glVertex3i(x1,y1,z0);
-            glVertex3i(x7,y1,z0);
-            
-
-            glEnd();
-            glColor3f(color.r,color.g,color.b);
-            glBegin(GL_QUADS); // xapa1
-            glVertex3i(x8,y0,z2);
             glVertex3i(x7,y0,z0);
-            glVertex3i(x7,y1,z0);
-            glVertex3i(x8,y1,z2);
+            glVertex3i(x7,y0,z1);
+            glVertex3i(x1,y0,z1);
             glEnd();
-
-            glColor3f(color.r,color.g,color.b);
-            glBegin(GL_QUADS); // xapa1
-            glVertex3i(x1,y1,z0);
-            glVertex3i(x0,y1,z2);
-            glVertex3i(x8,y1,z2);
-            glVertex3i(x7,y1,z0);
             
+            glColor3f(1,1,0);
+            glBegin(GL_QUADS); // xapa4 fora
+            glVertex3i(x7,y0,z0);
+            glVertex3i(x8,y2,z0);
+            glVertex3i(x8,y2,z1);
+            glVertex3i(x7,y0,z1);
+            glEnd();
+
+            
+            glColor3f(0.4,0.2,0.8);
+            glBegin(GL_QUADS); // xapa5 fora
+            glVertex3i(x0,y2,z1);
+            glVertex3i(x1,y0,z1);
+            glVertex3i(x7,y0,z1);
+            glVertex3i(x8,y2,z1);
             glEnd();
 
 
+            glColor3f(1,0,1);
+            glBegin(GL_QUADS); // xapa6 exterior
+            glVertex3i(x1,y0,z0*1.03);
+            glVertex3i(x0,y2,z0*1.03);
+            glVertex3i(x8,y2,z0*1.03);
+            glVertex3i(x7,y0,z0*1.03);
+            glEnd();
+
+            GLUquadricObj *p = gluNewQuadric();
+            //gluQuadricDrawStyle(GLU_LINE);
+            glTranslatef(x2, y1, z0);
+            glColor3f(0,0.2,0);
+            gluDisk(p, 0,y1/2, 100, 100);
+            glTranslatef(-x2, 0, 0);
+            glTranslatef(x4, 0, 0);
+            glColor3f(0,0.2,0);
+            gluDisk(p, 0,y1/2, 100, 100);
+            glTranslatef(-x4, 0, 0);
+            glTranslatef(x6, 0, 0);
+            glColor3f(0,0.2,0);
+            gluDisk(p, 0,y1/2, 100, 100);
+            glTranslatef(-x6, -y1, -z0);
+            glEnd();
 
 
         }
-        void draw(){
-            GLfloat x = position.x * size_x;
-            GLfloat x1 = (position.x + 1) * size_x;
-            GLfloat y = position.y * size_y;
-            GLfloat y1 =(position.y + 1) * size_y;
-            GLfloat z = position.z * size_z;
-            GLfloat z1 = (position.z + 1) * size_z;
+        
+        void drawWheelsR(GLfloat x0, GLfloat x1, GLfloat x2,GLfloat x4,
+                        GLfloat x6, GLfloat x7, GLfloat x8, GLfloat y0,
+                        GLfloat y1, GLfloat y2, GLfloat z3,GLfloat z4){
+
+            glColor3f(1,0,0);
+            glBegin(GL_QUADS); // xapa1 fora
+            glVertex3i(x0,y2,z3);
+            glVertex3i(x1,y0,z3);
+            glVertex3i(x1,y0,z4);
+            glVertex3i(x0,y2,z4);
+            glEnd();
+
+            glColor3f(0,1,0);
+            glBegin(GL_QUADS); // xapa2 fora
+            glVertex3i(x8,y2,z3);
+            glVertex3i(x0,y2,z3);
+            glVertex3i(x0,y2,z4);
+            glVertex3i(x8,y2,z4);
+            glEnd();
+
+            glColor3f(0,0,1);
+            glBegin(GL_QUADS); // xapa3 fora
+            glVertex3i(x1,y0,z3);
+            glVertex3i(x7,y0,z3);
+            glVertex3i(x7,y0,z4);
+            glVertex3i(x1,y0,z4);
+            glEnd();
             
-            glPolygonMode(GL_FRONT,GL_FILL);
-            glPolygonMode(GL_BACK,GL_LINE);
-
-            glColor3f(color.r,color.g,color.b);
-            glBegin(GL_QUADS); // BACK
-            glVertex3i(x,y,z);
-            glVertex3i(x1,y,z);
-            glVertex3i(x1,y1,z);
-            glVertex3i(x,y1,z);
+            glColor3f(1,1,0);
+            glBegin(GL_QUADS); // xapa4 fora
+            glVertex3i(x7,y0,z3);
+            glVertex3i(x8,y2,z3);
+            glVertex3i(x8,y2,z4);
+            glVertex3i(x7,y0,z4);
             glEnd();
 
-            glColor3f(color.r,color.g,color.b); // FRONT
-            glBegin(GL_QUADS);
-            glVertex3i(x,y1,z1);
+            
+            glColor3f(0.4,0.2,0.8);
+            glBegin(GL_QUADS); // xapa5 fora
+            glVertex3i(x1,y0,z3);
+            glVertex3i(x0,y2,z3);
+            glVertex3i(x8,y2,z3);
+            glVertex3i(x7,y0,z3);
+            glEnd();
+
+
+            glColor3f(1,0,1);
+            glBegin(GL_QUADS); // xapa6 exterior
+            glVertex3i(x0,y2,z4*0.97);
+            glVertex3i(x1,y0,z4*0.97);
+            glVertex3i(x7,y0,z4*0.97);
+            glVertex3i(x8,y2,z4*0.97);
+            glEnd();
+
+            GLUquadricObj *p = gluNewQuadric();
+            glTranslatef(x2, y1, z4);
+            glColor3f(0,0.2,0);
+            gluDisk(p, 0,y1/2, 100, 100);
+            glTranslatef(-x2, 0, 0);
+            glTranslatef(x4, 0, 0);
+            glColor3f(0,0.2,0);
+            gluDisk(p, 0,y1/2,100, 100);
+            glTranslatef(-x4, 0, 0);
+            glTranslatef(x6, 0, 0);
+            glColor3f(0,0.2,0);
+            gluDisk(p, 0,y1/2, 100, 100);
+            glTranslatef(-x6, -y1, -z4);
+            glEnd();
+        }
+        
+        void drawBody(GLfloat x1, GLfloat x7, GLfloat y1,
+                    GLfloat y3, GLfloat z1, GLfloat z3){
+
+            glColor3f(1,0,1);
+            glBegin(GL_QUADS); // xapa1 sota
             glVertex3i(x1,y1,z1);
-            glVertex3i(x1,y,z1);
-            glVertex3i(x,y,z1);
+            glVertex3i(x7,y1,z1);
+            glVertex3i(x7,y1,z3);
+            glVertex3i(x1,y1,z3);
             glEnd();
 
-            glColor3f(color.r,color.g,color.b); //RIGHT
-            glBegin(GL_QUADS);
-            glVertex3i(x,y1,z);
-            glVertex3i(x,y1,z1);
-            glVertex3i(x,y,z1);
-            glVertex3i(x,y,z);
-            glEnd();
 
-            glColor3f(color.r,color.g,color.b); // LEFT
-            glBegin(GL_QUADS);
-            glVertex3i(x1,y,z);
-            glVertex3i(x1,y,z1);
+            glColor3f(0.1,0,1);
+            glBegin(GL_QUADS); // xapa1 costat esq
+            glVertex3i(x7,y1,z1);
             glVertex3i(x1,y1,z1);
-            glVertex3i(x1,y1,z);
-            glEnd();
+            glVertex3i(x1,y3,z1);
+            glVertex3i(x7,y3,z1);
+            glEnd();    
 
-            glColor3f(color.r,color.g,color.b); // TOP
-            glBegin(GL_QUADS);
-            glVertex3i(x,y,z);
-            glVertex3i(x,y,z1);
-            glVertex3i(x1,y,z1);
-            glVertex3i(x1,y,z);
-            glEnd();
+            glColor3f(0.1,0.4,0.5);
+            glBegin(GL_QUADS); // xapa1 costat dret
+            glVertex3i(x1,y1,z3);
+            glVertex3i(x7,y1,z3);
+            glVertex3i(x7,y3,z3);
+            glVertex3i(x1,y3,z3);
+            glEnd();   
 
-            glColor3f(color.r,color.g,color.b); // BOTTOM
-            glBegin(GL_QUADS);
-            glVertex3i(x,y1,z1);
-            glVertex3i(x,y1,z);
-            glVertex3i(x1,y1,z);
+            glColor3f(0.1,0.2,0.5);
+            glBegin(GL_QUADS); // xapa1 costat davat
             glVertex3i(x1,y1,z1);
+            glVertex3i(x1,y1,z3);
+            glVertex3i(x1,y3,z3);
+            glVertex3i(x1,y3,z1);
+            glEnd();  
+
+            glColor3f(0.5,0.2,0.2);
+            glBegin(GL_QUADS); // xapa1 costat davat
+            glVertex3i(x7,y1,z3);
+            glVertex3i(x7,y1,z1);
+            glVertex3i(x7,y3,z1);
+            glVertex3i(x7,y3,z3);
+            glEnd();  
+
+            glColor3f(0.5,0.7,0.1);
+            glBegin(GL_QUADS); // xapa1 costat davat
+            glVertex3i(x1,y3,z1);
+            glVertex3i(x1,y3,z3);
+            glVertex3i(x7,y3,z3);
+            glVertex3i(x7,y3,z1);
+            
+            glEnd(); 
+
+        }
+
+        void drawCanon(GLfloat x4,GLfloat x0, GLfloat z0, GLfloat z1,
+                     GLfloat z2, GLfloat y1,GLfloat y3,GLfloat y4){
+            GLfloat zr = z1-z0;
+            GLUquadricObj *p = gluNewQuadric();
+            glRotatef(90.0, 1.0, 0.0, 0.0);
+            glTranslatef(x4, z2, -y4);
+            glColor3f(1,0.8,0);
+            gluCylinder(p, zr, zr, y1, 500, 500);
+            //glTranslatef(-x4, -z2, +y4);
+            //glRotatef(90.0, -1.0, 0.0, 0.0);
+            glColor3f(0.2,0.5,1);
+            gluDisk(p, 0,zr, 100, 100);
+            glRotatef(90.0, -1.0, 0.0, 0.0);
+            glRotatef(90.0, 0.0, 1.0, 0.0);
+            glColor3f(0.1,0.5,0.1);
+            glTranslatef(0, -(y4-y3)/2.0, 0);
+            gluCylinder(p, (y1/2.0)*0.8, (y1/2.0)*0.8, x4-x0, 500, 500);
+            glTranslatef(0, (y4-y3)/2.0, 0);
+            glRotatef(90.0, 0.0, -1.0, 0.0);
+            glTranslatef(-x4, -z2, y4);
             glEnd();
+
         }
 };
 
