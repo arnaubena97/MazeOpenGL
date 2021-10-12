@@ -153,11 +153,11 @@ void chargeSquares(){
 
     agent1.setPosition(maze.getStartPoint());
     agent1.color.setColor(1,0.7,0);
-    agent1.setSizesXY(SIZE_SQUARE_W, SIZE_SQUARE_H);
+    agent1.setSizesXY(SIZE_SQUARE_W, SIZE_SQUARE_H, 25);
 
     agent2.setPosition(maze.getEndPoint());
     agent2.color.setColor(0.3,0.2,0.6);
-    agent2.setSizesXY(SIZE_SQUARE_W, SIZE_SQUARE_H);
+    agent2.setSizesXY(SIZE_SQUARE_W, SIZE_SQUARE_H, 25);
 
 }
 
@@ -183,10 +183,10 @@ void display() {
 
     wall.draw(); // walls
     wall.drawFloor(HEIGHT, WIDTH);
-    tankUser.draw();
+    //tankUser.draw();
     //start.draw(); //start point
     //endsa.draw(); // end point
-    //agent1.draw(SIZE_SQUARE_SMALL); // agent user
+    agent1.draw(SIZE_SQUARE_SMALL); // agent user
     //agent2.draw(SIZE_SQUARE_SMALL); //agent pc
 
     glutSwapBuffers();

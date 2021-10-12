@@ -17,29 +17,81 @@ using namespace std;
 class Square {     
     public:       
         Point position; // Current position
-        float vx,vy; // Velocity vector
+        float vx,vy, vz; // Velocity vector
         int state; 
         long time_remaining, time_mov;
         RGB color; 
-        float size_x, size_y; // size of square
+        float size_x, size_y, size_z; // size of square
         Square(){
             state = QUIET;
             time_mov= 300;
         }
         
         void draw(int scale =0){
-            //printf("x:%d y:%d sizex:%f sizey:%f \n", x, y , size_x, size_y);
-            glColor3f(color.r,color.g,color.b);
+
+            GLfloat x = position.x * size_x;
+            GLfloat x1 = (position.x + 1) * size_x;
+            GLfloat z = position.y * size_y;
+            GLfloat z1 =(position.y + 1) * size_y;
+            GLfloat y = position.z * size_z;
+            GLfloat y1 = (position.z + 1) * size_z;
+            
+            glPolygonMode(GL_FRONT,GL_FILL);
+            glPolygonMode(GL_BACK,GL_LINE);
+
+
+            glColor3f(0,0,0);
+            glBegin(GL_QUADS); // BACK
+            glVertex3i(x,y,z);
+            glVertex3i(x1,y,z);
+            glVertex3i(x1,y1,z);
+            glVertex3i(x,y1,z);
+            glEnd();
+
+            glColor3f(0,0,0); // FRONT
             glBegin(GL_QUADS);
-            glVertex2i(position.x * size_x + scale ,position.y*size_y + scale);//vertex baix esquerra
-            glVertex2i((position.x+1)* size_x -scale,position.y*size_y+scale);//vertex baix dreta
-            glVertex2i((position.x+1) * size_x -scale ,(position.y+1)*size_y-scale);//vertex dalt dreta
-            glVertex2i(position.x * size_x +scale,(position.y+1)*size_y-scale);//vertex dalt esquerra
+            glVertex3i(x1,y1,z1);
+            glVertex3i(x,y1,z1);
+            glVertex3i(x,y,z1);
+            glVertex3i(x1,y,z1);
+            glEnd();
+
+            glColor3f(0,0,0); //RIGHT
+            glBegin(GL_QUADS);
+            glVertex3i(x,y1,z1);
+            glVertex3i(x,y1,z);
+            glVertex3i(x,y,z);
+            glVertex3i(x,y,z1);
+            glEnd();
+
+            glColor3f(0,0,0); // LEFT
+            glBegin(GL_QUADS);
+            glVertex3i(x1,y,z1);
+            glVertex3i(x1,y,z);
+            glVertex3i(x1,y1,z);
+            glVertex3i(x1,y1,z1);
+            glEnd();
+
+            glColor3f(0,0,0); // TOP
+            glBegin(GL_QUADS);
+            glVertex3i(x,y,z1);
+            glVertex3i(x,y,z);
+            glVertex3i(x1,y,z);
+            glVertex3i(x1,y,z1);
+            glEnd();
+
+            glColor3f(0,0,0); // BOTTOM
+            glBegin(GL_QUADS);
+            glVertex3i(x,y1,z);
+            glVertex3i(x,y1,z1);
+            glVertex3i(x1,y1,z1);
+            glVertex3i(x1,y1,z);
             glEnd();
         }
-        void setSizesXY(float x, float y){
+        void setSizesXY(float x, float y, float z = 0){
             size_y = y;
             size_x = x;
+            size_z = z;
         }
         
         void init_movement(int destination_x,int destination_y,int duration){
@@ -53,19 +105,21 @@ class Square {
                 {
                 position.x = position.x + vx*t;
                 position.y = position.y + vy*t;
+                position.z = 0;
                 time_remaining-=t;
                 }
             else if(state==MOVE && t>=time_remaining)
                 {
                 position.x = roundf(position.x + vx*time_remaining);
                 position.y = roundf(position.y + vy*time_remaining);
+                position.z = 0;
                 state=QUIET;
                 }
         }
         
         //functions to set the position of square
-        void setPosition(float x, float y){
-            position = Point(x,y);
+        void setPosition(float x, float y, float z = 0){
+            position = Point(x,y,z);
         }
         void setPosition(Point pos){
             position = pos;
