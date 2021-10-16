@@ -11,7 +11,12 @@ using namespace std;
 
 #define MOVE 1
 #define QUIET 2
+#define ROTATE 3
 
+#define UP 1
+#define DOWN 2
+#define LEFT 3
+#define RIGHT 4
 
 
 class Square {     
@@ -277,9 +282,18 @@ class Tank{
         Point position; // Current position
         RGB color, colorWheels, colorTank, colorCanon; 
         float size_x, size_y, size_z; // size of square
-        Tank(){
-        }
+        float vx,vy, vz, valpha; // Velocity vector
+        int state; 
+        int direction; //1NORTH 2SOUTH 3WEST 4EAST
+        long time_remaining, time_mov;
+        int angle, teoric_angle;
 
+        Tank(){
+            state = QUIET;
+            time_mov= 300;
+            direction = RIGHT;
+        }
+        
         void setSizesXY(float x, float y, float z = 0){
             size_y = y;
             size_x = x;
@@ -319,12 +333,133 @@ class Tank{
 
             glPolygonMode(GL_FRONT,GL_FILL);
             glPolygonMode(GL_BACK,GL_LINE);
+
+            glTranslatef((x0 + size_x/2), y0, (z0 + size_z/2));
+            glRotatef(angle, 0,1,0);
+            glTranslatef(-(x0 + size_x/2), -y0, -(z0 + size_z/2));
+            
+            
             drawWheelsL(x0, x1, x2, x4, x6, x7, x8, y0, y1, y2, z0, z1);
             drawWheelsR(x0, x1, x2, x4, x6, x7, x8, y0, y1, y2, z3, z4);
             drawBody(x1,x7,y1,y3,z1,z3);
             drawCanon(x4,x0,z0,z1,z2,y1,y3,y4);
+            //glRotatef(-angle, 0,-1,0);
+            //glPopMatrix();
         }
 
+
+        void init_movement(int destination_x,int destination_y,int duration){
+            vx = (destination_x - position.x)/duration;
+            vy = (destination_y - position.y)/duration;
+            state=MOVE;
+            time_remaining=duration;
+        }
+        void integrate(long t){
+            if(state==MOVE && t<time_remaining){
+                position.x = position.x + vx*t;
+                position.y = position.y + vy*t;
+                position.z = 0;
+                time_remaining-=t;
+                }
+            else if(state==MOVE && t>=time_remaining){
+                position.x = roundf(position.x + vx*time_remaining);
+                position.y = roundf(position.y + vy*time_remaining);
+                position.z = 0;
+                state=QUIET;
+            }
+            else if(state==ROTATE && t<time_remaining){
+                //printf("state: %d, angle: %d , time: %d\n", state, angle, t);
+                angle = angle + valpha*t;
+                time_remaining-=t;
+            }
+            else if(state==ROTATE && t>=time_remaining){
+                angle = teoric_angle;
+                state=QUIET;
+            }
+
+        }
+        void init_movement_angle(int destination, int duration){
+            valpha = (float)(destination - angle)/duration;
+            state=ROTATE;
+            time_remaining=duration;
+            //printf("time: %ld, valpa: %f \n", time_remaining ,valpha);
+        }
+
+        //functions to move square 1 position
+        void moveUp(){
+            init_movement(position.x,position.y +1,time_mov);
+        }
+        void moveDown(){
+            init_movement(position.x,position.y -1,time_mov);
+        }
+        void moveLeft(){
+            init_movement(position.x-1,position.y,time_mov);
+        }
+        void moveRight(){
+            init_movement(position.x+1,position.y,time_mov);
+        } 
+
+        
+
+        void rotateLeft(){
+            if(direction == UP){
+                init_movement_angle(angle + 90, time_mov);
+                teoric_angle += 90;
+            }
+            else if(direction == DOWN){
+                init_movement_angle(angle - 90, time_mov);
+                teoric_angle -= 90;
+            }
+            else{
+                init_movement_angle(angle + 180, time_mov);
+                teoric_angle += 180;
+            }
+        }
+        void rotateRight(){
+            if(direction == UP){
+                init_movement_angle(angle - 90, time_mov);
+                teoric_angle -= 90;
+            }
+            else if(direction == DOWN){
+                init_movement_angle(angle + 90, time_mov);
+                teoric_angle += 90;
+            }
+            else{
+                init_movement_angle(angle + 180, time_mov);
+                teoric_angle -= 180;
+            }
+        }
+        void rotateUp(){
+            if(direction == RIGHT){
+                init_movement_angle(angle + 90, time_mov);
+                teoric_angle += 90;
+            }
+            else if(direction == LEFT){
+                init_movement_angle(angle - 90, time_mov);
+                teoric_angle -= 90;
+            }
+            else{
+                init_movement_angle(angle + 180, time_mov);
+                teoric_angle += 180;
+            }
+        }
+        void rotateDown(){
+            if(direction == RIGHT){
+                init_movement_angle(angle - 90, time_mov);
+                teoric_angle -= 90;
+            }
+            else if(direction == LEFT){
+                printf("lokoo\n", direction, angle);
+                init_movement_angle(angle + 90, time_mov);
+                teoric_angle += 90;
+            }
+            else{
+                init_movement_angle(angle - 180, time_mov);
+                teoric_angle -= 180;
+            }
+        }
+
+    private:
         void drawWheelsL(GLfloat x0, GLfloat x1, GLfloat x2,GLfloat x4,
                         GLfloat x6, GLfloat x7, GLfloat x8, GLfloat y0,
                         GLfloat y1, GLfloat y2, GLfloat z0,GLfloat z1){
@@ -546,5 +681,7 @@ class Tank{
             glEnd();
 
         }
+
+
 };
 

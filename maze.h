@@ -29,6 +29,7 @@ class Maze {
             ReserveMemory();
             PutExteriorWalls();
             PutInteriorWalls();
+            //noWalls();
             PutBeginEnd();
         }
         
@@ -59,17 +60,17 @@ class Maze {
             for (int i = 0; i < columns; i++) {
                 for (int j = 0; j < rows; j++) {
                     if (board[i][j] ==agent1){
-                        return Point(i, j);
+                        return Point(i, j,0);
                     }
                 }
             }
-            return Point(0,0);
+            return Point(0,0,0);
         }
         Point getEndPoint(){
             for (int i = 0; i < columns; i++) {
                 for (int j = 0; j < rows; j++) {
                     if (board[i][j] ==agent2){
-                        return Point(i, j);
+                        return Point(i, j, 0);
                     }
                 }
             }
@@ -93,18 +94,22 @@ class Maze {
         
         // functions to update the board of maze
         void updateUp(Point p, char c){
+            //display();
             board[(int)p.x][(int)p.y] = ' ';
             board[(int)p.x][(int)p.y+1] = c;
         }
         void updateDown(Point p, char c){
+            //display();
             board[(int)p.x][(int)p.y] = ' ';
             board[(int)p.x][(int)p.y-1] = c;
         }
         void updateLeft(Point p, char c){
+            //display();
             board[(int)p.x][(int)p.y] = ' ';
             board[(int)p.x-1][(int)p.y] = c;
         }
         void updateRight(Point p, char c){
+            //display();
             board[(int)p.x][(int)p.y] = ' ';
             board[(int)p.x+1][(int)p.y] = c;
         }
@@ -236,4 +241,11 @@ class Maze {
         return -1;
     }
         
+        void noWalls(){
+            for (int i = 0; i < columns; i++) {
+                for (int j = 0; j < rows; j++) {
+                    (i == 0 || j==0 || i == columns-1 || j == rows-1) ? board[i][j] = '#': board[i][j] = ' ';
+                }
+            }
+        }
 };
