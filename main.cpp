@@ -23,11 +23,11 @@
 //              GLOBAL VARIABLES
 //-----------------------------------------------
 
-#define MED_COLUMNS 6
-#define MED_ROWS 6
+#define MED_COLUMNS 8
+#define MED_ROWS 8
 #define SIZE_SQUARE_SMALL 3 // quant mes petit
-#define WIDTH 700
-#define HEIGHT 700
+#define WIDTH 800
+#define HEIGHT 800
 
 int COLUMNS = MED_COLUMNS * 2 + 1;
 int ROWS = MED_ROWS * 2 + 1;
@@ -42,11 +42,7 @@ Maze maze(MED_COLUMNS, MED_ROWS);
 
 Walls wall(maze.getNumWalls());
 
-//Square wall;
-//Square start;
-//Square endsa;
-//Square agent1;
-//Square agent2;
+
 Tank agent1;
 Tank agent2;
 //-----------------------------------------------
@@ -63,7 +59,6 @@ void idle();
 //             MAIN PROCEDURE
 //-----------------------------------------------
 long last_t=0;
-//Square square;
 
 #define PI 3.1416
 void PositionObserver(float alpha,float beta,int radi)
@@ -124,8 +119,6 @@ int main(int argc,char *argv[])
 
     glutIdleFunc(idle);
 
-    //glMatrixMode(GL_PROJECTION);
-    //gluOrtho2D(0,WIDTH-1,0,HEIGHT-1);
 
     glutMainLoop();
     return 0;
@@ -136,30 +129,17 @@ int main(int argc,char *argv[])
 //-----------------------------------------------
 
 void chargeSquares(){
-    wall.setSizesXY(SIZE_SQUARE_W, SIZE_SQUARE_H, 25);
+    wall.setSizesXY(SIZE_SQUARE_W, SIZE_SQUARE_H, 15.0);
     wall.setPositions(maze);
 
-    agent1.setSizesXY(SIZE_SQUARE_W, SIZE_SQUARE_H, 50);
-    agent1.color.setColor(0.1,1,0.1);
+    agent1.setSizesXY(SIZE_SQUARE_W, SIZE_SQUARE_H, 30.0);
     agent1.setPosition(maze.getStartPoint());
-/*
-    start.setPosition(maze.getStartPoint());
-    start.color.setColor(0.9,0.1,0.1);
-    start.setSizesXY(SIZE_SQUARE_W, SIZE_SQUARE_H);
 
-    endsa.setPosition(maze.getEndPoint());
-    endsa.color.setColor(0.1,0.9,0.1);
-    endsa.setSizesXY(SIZE_SQUARE_W, SIZE_SQUARE_H);
-
-
-    agent1.setPosition(maze.getStartPoint());
-    agent1.color.setColor(1,0.7,0);
-    agent1.setSizesXY(SIZE_SQUARE_W, SIZE_SQUARE_H, 25);
-
+    agent2.setSizesXY(SIZE_SQUARE_W, SIZE_SQUARE_H, 30.0);
     agent2.setPosition(maze.getEndPoint());
-    agent2.color.setColor(0.3,0.2,0.6);
-    agent2.setSizesXY(SIZE_SQUARE_W, SIZE_SQUARE_H, 25);
-*/
+
+    
+
 }
 
 //-----------------------------------------------
@@ -183,12 +163,9 @@ void display() {
 
 
     wall.draw(); // walls
-    wall.drawFloor(HEIGHT, WIDTH);
+    wall.drawFloor(HEIGHT, WIDTH); // floor
     agent1.draw();
-    //start.draw(); //start point
-    //endsa.draw(); // end point
-    //agent1.draw(SIZE_SQUARE_SMALL); // agent user
-    //agent2.draw(SIZE_SQUARE_SMALL); //agent pc
+    //agent2.draw();
 
     glutSwapBuffers();
 }
@@ -197,6 +174,7 @@ void display() {
 //            KEYBOARD EVENTS
 //-----------------------------------------------
 void ArrowKey(int key,int x,int y){
+    maze.display();
         switch (key){
             case GLUT_KEY_RIGHT:
                 //moviment jugador
@@ -267,8 +245,6 @@ void keyboard(unsigned char key, int x, int y){
         zoomfactor -= 0.1;
     else if (key=='p')
         zoomfactor += 0.1;
-    else if (key=='m')
-        agent1.rotateLeft();
     glutPostRedisplay();
 };
 
@@ -278,9 +254,9 @@ void keyboard(unsigned char key, int x, int y){
 
 void idle(){
     long t;
-    //randomMove();
     t=glutGet(GLUT_ELAPSED_TIME); 
 
+    randomMove();
     if(last_t==0)
         last_t=t;
     else{
@@ -303,32 +279,53 @@ void randomMove(){
         while(flag!=1 && !(m1&&m2&&m3&&m4)){  
             v1 = rand() % 4;
             if (v1 == 0){
-                if (maze.canMoveLeft(agent2.position, maze.agent1) && agent2.state==QUIET){
-                    maze.updateLeft(agent2.position, maze.agent2);
-                    agent2.moveLeft();
+                if (maze.canMoveLeft(agent2.position,maze.agent1) && agent2.state==QUIET){
+                    if(agent2.direction!= LEFT){
+                        agent2.rotateLeft();
+                        agent2.direction = LEFT;
+                    }else{
+                        maze.updateLeft(agent2.position, maze.agent2);
+                        agent2.moveLeft(); 
+                    }
                     flag =1;
                 }
                 m1 = true;
             }else if (v1 == 1){
-                if (maze.canMoveDown(agent2.position, maze.agent1) && agent2.state==QUIET){
-                    maze.updateDown(agent2.position, maze.agent2); 
-                    agent2.moveDown();
+                if (maze.canMoveDown(agent2.position,maze.agent1) && agent2.state==QUIET){
+                    if(agent2.direction!= UP){
+                        agent2.rotateUp();
+                        agent2.direction = UP;
+                    }else{
+                        maze.updateDown(agent2.position, maze.agent2); 
+                        agent2.moveDown(); 
+                    }
                     flag =1;
-                } 
+                }
                 m2 = true;
             }else if (v1 == 2){
-                if (maze.canMoveRight(agent2.position, maze.agent1) && agent2.state==QUIET){
-                    maze.updateRight(agent2.position, maze.agent2);
-                    agent2.moveRight();
+
+                if (maze.canMoveRight(agent2.position,maze.agent1) && agent2.state==QUIET){
+                    if(agent2.direction!= RIGHT){
+                        agent2.rotateRight();
+                        agent2.direction = RIGHT;
+                    }else{
+                        maze.updateRight(agent2.position, maze.agent2); 
+                        agent2.moveRight();
+                    }
                     flag =1;
                 } 
                 m3 = true;
             }else if (v1 == 3){
-                if (maze.canMoveUp(agent2.position, maze.agent1) && agent2.state==QUIET){
-                    maze.updateUp(agent2.position, maze.agent2);
-                    agent2.moveUp();
+                if (maze.canMoveUp(agent2.position,maze.agent1) && agent2.state==QUIET){
+                    if(agent2.direction!= DOWN){
+                        agent2.rotateDown();
+                        agent2.direction = DOWN;
+                    }else{
+                        maze.updateUp(agent2.position, maze.agent2);
+                        agent2.moveUp();
+                    }
                     flag =1;
-                } 
+                }
                 m4 = true;
             }  
         }
