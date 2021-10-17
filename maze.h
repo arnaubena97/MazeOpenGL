@@ -29,7 +29,7 @@ class Maze {
             ReserveMemory();
             PutExteriorWalls();
             PutInteriorWalls();
-            noWalls();
+            //noWalls();
             PutBeginEnd();
         }
         

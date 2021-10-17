@@ -165,7 +165,7 @@ void display() {
     wall.draw(); // walls
     wall.drawFloor(HEIGHT, WIDTH); // floor
     agent1.draw();
-    //agent2.draw();
+    agent2.draw();
 
     glutSwapBuffers();
 }

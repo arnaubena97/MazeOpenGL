@@ -154,7 +154,6 @@ class Walls {
 class Tank{     
     public:       
         Point position; // Current position
-        RGB color, colorWheels, colorTank, colorCanon; 
         float size_x, size_y, size_z; // size of square
         float vx,vy, vz, valpha; // Velocity vector
         int state; 
@@ -205,7 +204,7 @@ class Tank{
             GLfloat y0 = position.z * size_z ;
             GLfloat y1 = (position.z + (1.0/6.0)) * size_z;
             GLfloat y2 = (position.z + (1.0/3.0)) * size_z;
-            GLfloat y3 = (position.z + (5.0/6.0)) * size_z;
+            GLfloat y3 = (position.z + (4.0/6.0)) * size_z;
             GLfloat y4 = (position.z + 1) * size_z;
 
             glPolygonMode(GL_FRONT,GL_FILL);
@@ -217,22 +216,15 @@ class Tank{
             glTranslatef(-x2, y0, -z2);
             //glTranslatef(-(x0 + size_x/2), -y0, -(z0 + size_z/2));
 
-            drawWheels( x0, x1, x3, x5, x6, y0, y1, y2, z1, z5, xpw1, xpw2, -0.3, 0);
-            drawWheels( x0, x1, x3, x5, x6, y0, y1, y2, z6, z3, xpw1, xpw2, -0.5, 1);
-            drawBody(x5,x6,y1,y3,z5,z6);
-            //drawCanon(x4,x0,z1,z2,z3,y1,y3,y4);
+            drawWheels(x0, x1, x3, x5, x6, y0, y1, y2, z1, z5, xpw1, xpw2, -0.3, 0);
+            drawWheels(x0, x1, x3, x5, x6, y0, y1, y2, z6, z3, xpw1, xpw2, -0.5, 1);
+            drawBody(x5, x6, y1, y3, z5, z6);
+            drawCanon(x1, x2, y1, y4, z2, z5, z6);
             glRotatef(-angle, 0,-1,0);
             glPopMatrix();
             
         }
 
-
-        void init_movement(int destination_x,int destination_y,int duration){
-            vx = (destination_x - position.x)/duration;
-            vy = (destination_y - position.y)/duration;
-            state=MOVE;
-            time_remaining=duration;
-        }
         void integrate(long t){
             if(state==MOVE && t<time_remaining){
                 position.x = position.x + vx*t;
@@ -256,12 +248,6 @@ class Tank{
                 state=QUIET;
             }
 
-        }
-        void init_movement_angle(int destination, int duration){
-            valpha = (float)(destination - angle)/duration;
-            state=ROTATE;
-            time_remaining=duration;
-            //printf("time: %ld, valpa: %f \n", time_remaining ,valpha);
         }
 
         //functions to move square 1 position
@@ -304,7 +290,7 @@ class Tank{
                 teoric_angle += 90;
             }
             else{
-                init_movement_angle(angle + 180, time_mov);
+                init_movement_angle(angle - 180, time_mov);
                 teoric_angle -= 180;
             }
         }
@@ -338,6 +324,21 @@ class Tank{
         }
 
     private:
+        void init_movement(int destination_x,int destination_y,int duration){
+            vx = (destination_x - position.x)/duration;
+            vy = (destination_y - position.y)/duration;
+            state=MOVE;
+            time_remaining=duration;
+        }
+        
+        void init_movement_angle(int destination, int duration){
+            valpha = (float)(destination - angle)/duration;
+            state=ROTATE;
+            time_remaining=duration;
+            //printf("time: %ld, valpa: %f \n", time_remaining ,valpha);
+        }
+
+
         void drawWheels( GLfloat x0,  GLfloat x1,  GLfloat x3,  GLfloat x5,  GLfloat x6,  GLfloat y0, GLfloat y1, GLfloat y2,  GLfloat z1, GLfloat z5, GLfloat xpw1, GLfloat xpw2, float wheel, bool side){
 
             glColor3f(1,0,0);
@@ -470,35 +471,25 @@ class Tank{
 
         }
 
-        void drawCanon(GLfloat x4,GLfloat x0, GLfloat z0, GLfloat z1,
-                     GLfloat z2, GLfloat y1,GLfloat y3,GLfloat y4){
-            GLfloat zr = z1-z0;
+        void drawCanon(GLfloat x1,GLfloat x2, GLfloat y1, GLfloat y4,
+                     GLfloat z2, GLfloat z5, GLfloat z6){
+            GLfloat zr = (z6-z5)/3.0;
             GLUquadricObj *p = gluNewQuadric();
             glRotatef(90.0, 1.0, 0.0, 0.0);
-            glTranslatef(x4, z2, -y4);
-            //glTranslatef(x4, -y4, z2);
+            glTranslatef(x2, z2, -y4);
             glColor3f(1,0.8,0);
-            gluCylinder(p, zr, zr, y1, 500, 500);
-            //glTranslatef(-x4, -z2, +y4);
-            //glRotatef(90.0, -1.0, 0.0, 0.0);
+            gluCylinder(p, zr, zr, 2*y1, 500, 500);
             glColor3f(0.2,0.5,1);
             gluDisk(p, 0,zr, 100, 100);
             glRotatef(90.0, -1.0, 0.0, 0.0);
             glRotatef(90.0, 0.0, 1.0, 0.0);
             glColor3f(0.1,0.5,0.1);
-            glTranslatef(0, -(y4-y3)/2.0, 0);
-            gluCylinder(p, (y1/2.0)*0.8, (y1/2.0)*0.8, x4-x0, 500, 500);
-            glTranslatef(0, (y4-y3)/2.0, 0);
+            glTranslatef(0, -(y1)/2.0, 0);
+            gluCylinder(p, (y1/2.0), (y1/2.0), x2-x1, 500, 500);
+            glTranslatef(0, (y1)/2.0, 0);
             glRotatef(90.0, 0.0, -1.0, 0.0);
-            glTranslatef(-x4, -z2, y4);
-            //glTranslatef(-x4, -y4, z2);
+            glTranslatef(-x2, -z2, y4);
             glEnd();
-
-        }
-
-        
-        void drawWheelsVIS(){
-
 
         }
 
