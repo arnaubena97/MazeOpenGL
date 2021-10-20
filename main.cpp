@@ -18,6 +18,11 @@
 #include "extras.h"
 #include "maze.h"
 #include "square.h"
+#include <string.h>
+#include <unistd.h>
+#include <string> 
+#include <iostream>
+
 
 //-----------------------------------------------
 //              GLOBAL VARIABLES
@@ -29,6 +34,7 @@
 #define WIDTH 800
 #define HEIGHT 800
 
+int TIME = 60;
 int COLUMNS = MED_COLUMNS * 2 + 1;
 int ROWS = MED_ROWS * 2 + 1;
 
@@ -117,6 +123,11 @@ int main(int argc,char *argv[])
     glutKeyboardFunc(keyboard);
     glutSpecialFunc(ArrowKey);
 
+    //2D
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
+    glMatrixMode(GL_PROJECTION);
+    gluOrtho2D(0,WIDTH-1,0,HEIGHT-1);
+
     glutIdleFunc(idle);
 
 
@@ -147,6 +158,7 @@ void chargeSquares(){
 //-----------------------------------------------
 
 void display() {
+    
     glClearColor(0.8,0.8,0.8,0.0);
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
@@ -166,6 +178,24 @@ void display() {
     wall.drawFloor(HEIGHT, WIDTH); // floor
     agent1.draw();
     agent2.draw();
+
+    //2D  
+    //Imprimir text
+    string valor_pasar = to_string(TIME);
+            //cout<<valor_pasar<<endl;
+            string frase = "Time left: " + valor_pasar;        
+            int len = frase.length();
+
+            glRasterPos2f(-200, 400);
+            
+             
+            for (int i = 0; i < frase.length(); i++){
+                //cout<<frase[i]<<endl;
+
+                //glutStrokeCharacter(GLUT_STROKE_ROMAN, frase[i]);
+                glutBitmapCharacter( GLUT_BITMAP_TIMES_ROMAN_24, frase[i]);
+            
+            }
 
     glutSwapBuffers();
 }
@@ -253,18 +283,44 @@ void keyboard(unsigned char key, int x, int y){
 //-----------------------------------------------
 
 void idle(){
-    long t;
-    t=glutGet(GLUT_ELAPSED_TIME); 
 
+    long t;
+    string temps;
+
+    //Prova
+    int tiempo;
+    int timeposss;
+
+    temps = to_string(t);
+    
     randomMove();
-    if(last_t==0)
+    t=glutGet(GLUT_ELAPSED_TIME); 
+    
+
+    if(last_t==0){
         last_t=t;
+    }
     else{
         agent1.integrate(t-last_t);
         agent2.integrate(t-last_t);
         last_t=t;
     }
 
+    if(t < 1000){
+
+        temps = '0';
+        //cout<<temps<<endl;
+        
+    }else if(t > 1000 && t < 60000){
+        
+       tiempo = t;
+       if (tiempo>timeposss){
+           timeposss = timeposss+1000;
+           TIME--;
+           cout<<timeposss<<tiempo<<endl;
+       }
+       
+    }
     glutPostRedisplay();
 }
 
