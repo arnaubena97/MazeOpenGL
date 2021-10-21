@@ -35,6 +35,8 @@
 #define HEIGHT 800
 
 int TIME = 60;
+int time_show = TIME;
+
 int COLUMNS = MED_COLUMNS * 2 + 1;
 int ROWS = MED_ROWS * 2 + 1;
 
@@ -44,11 +46,11 @@ float SIZE_SQUARE_H = (float)HEIGHT/(float)ROWS;
 int anglealpha = 90;
 int anglebeta = 90;
 float zoomfactor = 1.0;
+long last_t=0;
+#define PI 3.1416
+
 Maze maze(MED_COLUMNS, MED_ROWS);
-
 Walls wall(maze.getNumWalls());
-
-
 Tank agent1;
 Tank agent2;
 //-----------------------------------------------
@@ -64,9 +66,6 @@ void idle();
 //-----------------------------------------------
 //             MAIN PROCEDURE
 //-----------------------------------------------
-long last_t=0;
-
-#define PI 3.1416
 void PositionObserver(float alpha,float beta,int radi)
 {
   float x,y,z;
@@ -148,9 +147,30 @@ void chargeSquares(){
 
     agent2.setSizesXY(SIZE_SQUARE_W, SIZE_SQUARE_H, 30.0);
     agent2.setPosition(maze.getEndPoint());
+}
 
-    
-
+//-----------------------------------------------
+//             DISPLAY TEXT
+//-----------------------------------------------
+void display_text(string s){
+    float size = 0.3;
+    (time_show<= 10) ? glColor3f(1.0, 0.0, 0.0): glColor3f(0.0, 0.0, 0.0);
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    gluOrtho2D(0,WIDTH-1,0,HEIGHT-1);
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadIdentity();
+    glTranslatef(WIDTH*0.04, HEIGHT *0.91, 1);
+    glScalef(size, size, 1);
+    for( char* p = &s[0] ; *p; p++)
+    {
+        glutStrokeCharacter(GLUT_STROKE_ROMAN, *p);
+    }
+    glPopMatrix();
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
 }
 
 //-----------------------------------------------
@@ -178,25 +198,13 @@ void display() {
     wall.drawFloor(HEIGHT, WIDTH); // floor
     agent1.draw();
     agent2.draw();
-
-    //2D  
-    //Imprimir text
-    string valor_pasar = to_string(TIME);
-            //cout<<valor_pasar<<endl;
-            string frase = "Time left: " + valor_pasar;        
-            int len = frase.length();
-
-            glRasterPos2f(-200, 400);
-            
-             
-            for (int i = 0; i < frase.length(); i++){
-                //cout<<frase[i]<<endl;
-
-                //glutStrokeCharacter(GLUT_STROKE_ROMAN, frase[i]);
-                glutBitmapCharacter( GLUT_BITMAP_TIMES_ROMAN_24, frase[i]);
-            
-            }
-
+    
+    if (time_show <=0){
+        display_text("TIME OUT");
+        if (time_show <=-2) exit(0);
+    }else{
+        display_text("Time left: " + std::to_string(time_show) + "s");
+    }
     glutSwapBuffers();
 }
 
@@ -204,54 +212,53 @@ void display() {
 //            KEYBOARD EVENTS
 //-----------------------------------------------
 void ArrowKey(int key,int x,int y){
-    maze.display();
-        switch (key){
-            case GLUT_KEY_RIGHT:
-                //moviment jugador
-                if (maze.canMoveRight(agent1.position,maze.agent2) && agent1.state==QUIET){
-                    if(agent1.direction!= RIGHT){
-                        agent1.rotateRight();
-                        agent1.direction = RIGHT;
-                    }else{
-                        maze.updateRight(agent1.position, maze.agent1); 
-                        agent1.moveRight();
-                    }
-                } 
-                break;
-            case GLUT_KEY_LEFT:
-                if (maze.canMoveLeft(agent1.position,maze.agent2) && agent1.state==QUIET){
-                    if(agent1.direction!= LEFT){
-                        agent1.rotateLeft();
-                        agent1.direction = LEFT;
-                    }else{
-                    maze.updateLeft(agent1.position, maze.agent1);
-                    agent1.moveLeft(); 
-                    }
+    switch (key){
+        case GLUT_KEY_RIGHT:
+            //moviment jugador
+            if (maze.canMoveRight(agent1.position,maze.agent2) && agent1.state==QUIET){
+                if(agent1.direction!= RIGHT){
+                    agent1.rotateRight();
+                    agent1.direction = RIGHT;
+                }else{
+                    maze.updateRight(agent1.position, maze.agent1); 
+                    agent1.moveRight();
                 }
-                break;
-            case GLUT_KEY_DOWN:
-                if (maze.canMoveUp(agent1.position,maze.agent2) && agent1.state==QUIET){
-                    if(agent1.direction!= DOWN){
-                        agent1.rotateDown();
-                        agent1.direction = DOWN;
-                    }else{
-                        maze.updateUp(agent1.position, maze.agent1);
-                        agent1.moveUp();
-                    }
+            } 
+            break;
+        case GLUT_KEY_LEFT:
+            if (maze.canMoveLeft(agent1.position,maze.agent2) && agent1.state==QUIET){
+                if(agent1.direction!= LEFT){
+                    agent1.rotateLeft();
+                    agent1.direction = LEFT;
+                }else{
+                maze.updateLeft(agent1.position, maze.agent1);
+                agent1.moveLeft(); 
                 }
-                break;
-            case GLUT_KEY_UP:
-                if (maze.canMoveDown(agent1.position,maze.agent2) && agent1.state==QUIET){
-                    if(agent1.direction!= UP){
-                        agent1.rotateUp();
-                        agent1.direction = UP;
-                    }else{
-                    maze.updateDown(agent1.position, maze.agent1); 
-                    agent1.moveDown(); 
-                    }
+            }
+            break;
+        case GLUT_KEY_DOWN:
+            if (maze.canMoveUp(agent1.position,maze.agent2) && agent1.state==QUIET){
+                if(agent1.direction!= DOWN){
+                    agent1.rotateDown();
+                    agent1.direction = DOWN;
+                }else{
+                    maze.updateUp(agent1.position, maze.agent1);
+                    agent1.moveUp();
                 }
-                break;
-        }
+            }
+            break;
+        case GLUT_KEY_UP:
+            if (maze.canMoveDown(agent1.position,maze.agent2) && agent1.state==QUIET){
+                if(agent1.direction!= UP){
+                    agent1.rotateUp();
+                    agent1.direction = UP;
+                }else{
+                maze.updateDown(agent1.position, maze.agent1); 
+                agent1.moveDown(); 
+                }
+            }
+            break;
+    }
     
     glutPostRedisplay();
 };
@@ -283,19 +290,10 @@ void keyboard(unsigned char key, int x, int y){
 //-----------------------------------------------
 
 void idle(){
-
     long t;
-    string temps;
-
-    //Prova
-    int tiempo;
-    int timeposss;
-
-    temps = to_string(t);
-    
     randomMove();
     t=glutGet(GLUT_ELAPSED_TIME); 
-    
+    time_show = TIME - (int)((int)t/1000);
 
     if(last_t==0){
         last_t=t;
@@ -306,28 +304,12 @@ void idle(){
         last_t=t;
     }
 
-    if(t < 1000){
-
-        temps = '0';
-        //cout<<temps<<endl;
-        
-    }else if(t > 1000 && t < 60000){
-        
-       tiempo = t;
-       if (tiempo>timeposss){
-           timeposss = timeposss+1000;
-           TIME--;
-           cout<<timeposss<<tiempo<<endl;
-       }
-       
-    }
     glutPostRedisplay();
 }
 
 //-----------------------------------------------
-//            RANDOM MOVE
+//            RANDOM MOVE --> ADD DFS??
 //-----------------------------------------------
-//comit
 void randomMove(){
     bool m1,m2,m3,m4; // controlar si es queda tancat, sino -> while(true)
     int v1;
