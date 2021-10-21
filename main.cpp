@@ -14,6 +14,7 @@
     #define GL_SILENCE_DEPRECATION
     #include <GLUT/glut.h>
     #include <OpenGL/gl.h>
+    #include "jpeg-9d2/jpeglib.h"
 #endif
 #include "extras.h"
 #include "maze.h"
