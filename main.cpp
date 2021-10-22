@@ -23,6 +23,7 @@
 #include <unistd.h>
 #include <string> 
 #include <iostream>
+#include "jpeglib.h"
 
 
 //-----------------------------------------------
@@ -63,6 +64,9 @@ void chargeSquares();
 void keyboard(unsigned char c,int x,int y);
 void ArrowKey(int key,int x,int y);
 void idle();
+void ReadJPEG(char *filename,unsigned char **image,int *width, int *height);
+void LoadTexture(char *filename,int dim);
+
 
 //-----------------------------------------------
 //             MAIN PROCEDURE
@@ -118,18 +122,23 @@ int main(int argc,char *argv[])
     glutInitWindowSize(WIDTH, HEIGHT);
     glutCreateWindow("Maze board");
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_TEXTURE_2D);
         
     glutDisplayFunc(display);
     glutKeyboardFunc(keyboard);
     glutSpecialFunc(ArrowKey);
 
+    
     //2D
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
     glMatrixMode(GL_PROJECTION);
     gluOrtho2D(0,WIDTH-1,0,HEIGHT-1);
-
+    glEnable(GL_TEXTURE_2D);
     glutIdleFunc(idle);
 
+    glBindTexture(GL_TEXTURE_2D,0);
+    LoadTexture("pared.jpg",64);
+    
 
     glutMainLoop();
     return 0;
@@ -194,7 +203,6 @@ void display() {
 
     glMatrixMode(GL_MODELVIEW);
 
-
     wall.draw(); // walls
     wall.drawFloor(HEIGHT, WIDTH); // floor
     agent1.draw();
@@ -206,6 +214,7 @@ void display() {
     }else{
         display_text("Time left: " + std::to_string(time_show) + "s");
     }
+    
     glutSwapBuffers();
 }
 
@@ -369,4 +378,88 @@ void randomMove(){
             }  
         }
     
+}
+
+/*--------------------------------------------------------*/
+void ReadJPEG(char *filename,unsigned char **image,int *width, int *height)
+{
+  struct jpeg_decompress_struct cinfo;
+  struct jpeg_error_mgr jerr;
+  FILE * infile;
+  unsigned char **buffer;
+  int i,j;
+
+  cinfo.err = jpeg_std_error(&jerr);
+  jpeg_create_decompress(&cinfo);
+
+
+  if ((infile = fopen(filename, "rb")) == NULL) {
+    printf("Unable to open file %s\n",filename);
+    exit(1);
+  }
+
+  jpeg_stdio_src(&cinfo, infile);
+  jpeg_read_header(&cinfo, TRUE);
+  jpeg_calc_output_dimensions(&cinfo);
+  jpeg_start_decompress(&cinfo);
+
+  *width = cinfo.output_width;
+  *height  = cinfo.output_height;
+
+
+  *image=(unsigned char*)malloc(cinfo.output_width*cinfo.output_height*cinfo.output_components);
+
+  buffer=(unsigned char **)malloc(1*sizeof(unsigned char **));
+  buffer[0]=(unsigned char *)malloc(cinfo.output_width*cinfo.output_components);
+
+
+  i=0;
+  while (cinfo.output_scanline < cinfo.output_height) {
+    jpeg_read_scanlines(&cinfo, buffer, 1);
+
+    for(j=0;j<cinfo.output_width*cinfo.output_components;j++)
+      {
+	(*image)[i]=buffer[0][j];
+	i++;
+      }   
+
+    }
+
+  free(buffer);
+  jpeg_finish_decompress(&cinfo);
+} 
+
+/*--------------------------------------------------------*/
+void LoadTexture(char *filename,int dim)
+{
+  unsigned char *buffer;
+  unsigned char *buffer2;
+  int width,height;
+  long i,j;
+  long k,h;
+
+  ReadJPEG(filename,&buffer,&width,&height);
+
+  buffer2=(unsigned char*)malloc(dim*dim*3);
+
+  //-- The texture pattern is subsampled so that its dimensions become dim x dim --
+  for(i=0;i<dim;i++)
+    for(j=0;j<dim;j++)
+      {
+	k=i*height/dim;
+	h=j*width/dim;
+	
+	buffer2[3*(i*dim+j)]=buffer[3*(k*width +h)];
+	buffer2[3*(i*dim+j)+1]=buffer[3*(k*width +h)+1];
+	buffer2[3*(i*dim+j)+2]=buffer[3*(k*width +h)+2];
+
+      }
+
+  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+  glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
+  glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,dim,dim,0,GL_RGB,GL_UNSIGNED_BYTE,buffer2);
+
+  free(buffer);
+  free(buffer2);
 }

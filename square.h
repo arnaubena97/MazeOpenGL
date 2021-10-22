@@ -22,11 +22,10 @@ using namespace std;
 class SquareWall {     
     public:       
         Point position; // Current position
-        RGB color; 
+        //RGB color; 
         float size_x, size_y, size_z; // size of square
         SquareWall(){
         }
-
         void setSizesXY(float x, float y, float z = 0){
             size_y = y;
             size_x = x;
@@ -51,53 +50,65 @@ class SquareWall {
             glPolygonMode(GL_BACK,GL_LINE);
 
 
-            glColor3f(1,0,1);
+            //glColor3f(1,0,1);
+            glEnable(GL_TEXTURE_2D);
+            glBindTexture(GL_TEXTURE_2D,0);
             glBegin(GL_QUADS); // BACK
             glVertex3i(x1,y,z);
             glVertex3i(x,y,z);
             glVertex3i(x,y1,z);
             glVertex3i(x1,y1,z);
             glEnd();
+            glDisable(GL_TEXTURE_2D);
 
-            glColor3f(1,0,0); // FRONT
+            glEnable(GL_TEXTURE_2D);
+            glBindTexture(GL_TEXTURE_2D,0); // FRONT
             glBegin(GL_QUADS);
             glVertex3i(x1,y1,z1);
             glVertex3i(x,y1,z1);
             glVertex3i(x,y,z1);
             glVertex3i(x1,y,z1);
             glEnd();
+            glDisable(GL_TEXTURE_2D);
 
-            glColor3f(0,1,0); //RIGHT
+            glEnable(GL_TEXTURE_2D);
+            glBindTexture(GL_TEXTURE_2D,0); //RIGHT
             glBegin(GL_QUADS);
             glVertex3i(x,y1,z1);
             glVertex3i(x,y1,z);
             glVertex3i(x,y,z);
             glVertex3i(x,y,z1);
             glEnd();
+            glDisable(GL_TEXTURE_2D);
 
-            glColor3f(0,0,1); // LEFT
+            glBindTexture(GL_TEXTURE_2D,0); // LEFT
             glBegin(GL_QUADS);
             glVertex3i(x1,y,z1);
             glVertex3i(x1,y,z);
             glVertex3i(x1,y1,z);
             glVertex3i(x1,y1,z1);
             glEnd();
+            glDisable(GL_TEXTURE_2D);
 
-            glColor3f(0.5,0.5,0.5); // TOP
+            glEnable(GL_TEXTURE_2D);
+            glBindTexture(GL_TEXTURE_2D,0); // TOP
             glBegin(GL_QUADS);
             glVertex3i(x,y,z1);
             glVertex3i(x,y,z);
             glVertex3i(x1,y,z);
             glVertex3i(x1,y,z1);
             glEnd();
+            glDisable(GL_TEXTURE_2D);
 
-            glColor3f(0.3,0.6,0.7); // BOTTOM
+            glEnable(GL_TEXTURE_2D);
+            glBindTexture(GL_TEXTURE_2D,0);// BOTTOM
             glBegin(GL_QUADS);
             glVertex3i(x,y1,z);
             glVertex3i(x,y1,z1);
             glVertex3i(x1,y1,z1);
             glVertex3i(x1,y1,z);
             glEnd();
+            glDisable(GL_TEXTURE_2D);
         }
 };
 
@@ -120,7 +131,7 @@ class Walls {
                 for (int j = 0; j < m.rows; j++) {
                     if (m.board[i][j] =='#'){
                         walls[cnt].setPosition(i, j);
-                        walls[cnt].color = color;
+                        //walls[cnt].color = color;
                         walls[cnt].setSizesXY(size_x,size_y, size_z);
                         cnt++;
                     }
