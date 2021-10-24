@@ -49,64 +49,58 @@ class SquareWall {
             glPolygonMode(GL_FRONT,GL_FILL);
             glPolygonMode(GL_BACK,GL_LINE);
 
-
-            //glColor3f(1,0,1);
             glEnable(GL_TEXTURE_2D);
             glBindTexture(GL_TEXTURE_2D,0);
             glBegin(GL_QUADS); // BACK
-            glVertex3i(x1,y,z);
-            glVertex3i(x,y,z);
-            glVertex3i(x,y1,z);
-            glVertex3i(x1,y1,z);
+            glTexCoord2f(3,0); glVertex3i(x1,y,z);
+            glTexCoord2f(0,0); glVertex3i(x,y,z);
+            glTexCoord2f(0,1); glVertex3i(x,y1,z);
+            glTexCoord2f(3,1); glVertex3i(x1,y1,z);
             glEnd();
             glDisable(GL_TEXTURE_2D);
 
-            glEnable(GL_TEXTURE_2D);
-            glBindTexture(GL_TEXTURE_2D,0); // FRONT
+            glColor3f(1,0,0); // FRONT
             glBegin(GL_QUADS);
             glVertex3i(x1,y1,z1);
             glVertex3i(x,y1,z1);
             glVertex3i(x,y,z1);
             glVertex3i(x1,y,z1);
             glEnd();
-            glDisable(GL_TEXTURE_2D);
 
             glEnable(GL_TEXTURE_2D);
-            glBindTexture(GL_TEXTURE_2D,0); //RIGHT
+            glBindTexture(GL_TEXTURE_2D,2); //RIGHT To texture
             glBegin(GL_QUADS);
-            glVertex3i(x,y1,z1);
-            glVertex3i(x,y1,z);
-            glVertex3i(x,y,z);
-            glVertex3i(x,y,z1);
+            glTexCoord2f(3,0);glVertex3i(x,y1,z1);
+            glTexCoord2f(0,0);glVertex3i(x,y1,z);
+            glTexCoord2f(0,1);glVertex3i(x,y,z);
+            glTexCoord2f(3,1);glVertex3i(x,y,z1);
             glEnd();
             glDisable(GL_TEXTURE_2D);
 
-            glBindTexture(GL_TEXTURE_2D,0); // LEFT
+            glColor3f(0,0,1); // LEFT
             glBegin(GL_QUADS);
             glVertex3i(x1,y,z1);
             glVertex3i(x1,y,z);
             glVertex3i(x1,y1,z);
             glVertex3i(x1,y1,z1);
             glEnd();
-            glDisable(GL_TEXTURE_2D);
 
-            glEnable(GL_TEXTURE_2D);
-            glBindTexture(GL_TEXTURE_2D,0); // TOP
+             // BOTTOM
+            glColor3f(0.3,0.6,0.7);
             glBegin(GL_QUADS);
             glVertex3i(x,y,z1);
             glVertex3i(x,y,z);
             glVertex3i(x1,y,z);
             glVertex3i(x1,y,z1);
             glEnd();
-            glDisable(GL_TEXTURE_2D);
 
             glEnable(GL_TEXTURE_2D);
-            glBindTexture(GL_TEXTURE_2D,0);// BOTTOM
+            glBindTexture(GL_TEXTURE_2D,1); // TOP
             glBegin(GL_QUADS);
-            glVertex3i(x,y1,z);
-            glVertex3i(x,y1,z1);
-            glVertex3i(x1,y1,z1);
-            glVertex3i(x1,y1,z);
+            glTexCoord2f(2,0);glVertex3i(x,y1,z);
+            glTexCoord2f(0,0);glVertex3i(x,y1,z1);
+            glTexCoord2f(0,1);glVertex3i(x1,y1,z1);
+            glTexCoord2f(2,1);glVertex3i(x1,y1,z);
             glEnd();
             glDisable(GL_TEXTURE_2D);
         }
@@ -151,13 +145,17 @@ class Walls {
             size_z = z;
         }
         void drawFloor(float x, float y){
-            glColor3f(1.0,1.0,1.0);
+
+
+            glEnable(GL_TEXTURE_2D);
+            glBindTexture(GL_TEXTURE_2D,3); 
             glBegin(GL_QUADS);
-            glVertex3i(0,0,0);//vertex baix esquerra
-            glVertex3i(0,0,y);//vertex baix dreta
-            glVertex3i(x,0,y);//vertex dalt dreta
-            glVertex3i(x,0,0);//vertex dalt esquerra
+            glTexCoord2f(30,0);glVertex3i(0,0,0);//vertex baix esquerra
+            glTexCoord2f(0,0);glVertex3i(0,0,y);//vertex baix dreta
+            glTexCoord2f(0,30);glVertex3i(x,0,y);//vertex dalt dreta
+            glTexCoord2f(30,30);glVertex3i(x,0,0);//vertex dalt esquerra
             glEnd();
+            glDisable(GL_TEXTURE_2D);
         }
 };
 

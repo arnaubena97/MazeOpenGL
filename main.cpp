@@ -7,15 +7,6 @@
 //-----------------------------------------------
 //           INCLUDES DEPENDS OS
 //-----------------------------------------------
-
-#if  __linux__ 
-    #include <GL/glut.h>
-#elif __APPLE__ 
-    #define GL_SILENCE_DEPRECATION
-    #include <GLUT/glut.h>
-    #include <OpenGL/gl.h>
-    #include "jpeg-9d2/jpeglib.h"
-#endif
 #include "extras.h"
 #include "maze.h"
 #include "square.h"
@@ -23,7 +14,17 @@
 #include <unistd.h>
 #include <string> 
 #include <iostream>
-#include "jpeglib.h"
+#if  __linux__ 
+    #include <GL/glut.h>
+    #include "jpeglib.h"
+#elif __APPLE__ 
+    #define GL_SILENCE_DEPRECATION
+    #include <GLUT/glut.h>
+    #include <OpenGL/gl.h>
+    #include "jpeg-9d3/jpeglib.h"
+#endif
+
+
 
 
 //-----------------------------------------------
@@ -128,17 +129,25 @@ int main(int argc,char *argv[])
     glutKeyboardFunc(keyboard);
     glutSpecialFunc(ArrowKey);
 
-    
-    //2D
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
-    glMatrixMode(GL_PROJECTION);
-    gluOrtho2D(0,WIDTH-1,0,HEIGHT-1);
-    glEnable(GL_TEXTURE_2D);
+
     glutIdleFunc(idle);
 
     glBindTexture(GL_TEXTURE_2D,0);
-    LoadTexture("pared.jpg",64);
+    LoadTexture("textures/pared.jpg",64);
     
+    glBindTexture(GL_TEXTURE_2D,1);
+    LoadTexture("textures/grava.jpg",64);
+    
+    
+    glBindTexture(GL_TEXTURE_2D,2);
+    LoadTexture("textures/wood.jpg",64);
+    
+    
+    glBindTexture(GL_TEXTURE_2D,3);
+    LoadTexture("textures/grass.jpg",64);
+    
+    
+
 
     glutMainLoop();
     return 0;
@@ -381,6 +390,7 @@ void randomMove(){
 }
 
 /*--------------------------------------------------------*/
+/*--------------------------------------------------------*/
 void ReadJPEG(char *filename,unsigned char **image,int *width, int *height)
 {
   struct jpeg_decompress_struct cinfo;
@@ -429,6 +439,9 @@ void ReadJPEG(char *filename,unsigned char **image,int *width, int *height)
   jpeg_finish_decompress(&cinfo);
 } 
 
+
+
+/*--------------------------------------------------------*/
 /*--------------------------------------------------------*/
 void LoadTexture(char *filename,int dim)
 {
