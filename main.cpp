@@ -325,9 +325,7 @@ void idle(){
     long t;
     
     t=glutGet(GLUT_ELAPSED_TIME); 
-    printf("%d, %d, %d \n", time_show, flagExit, endGame);
     if(endGame != 0 && flagExit != endGame){
-        printf("HELLLOOOO");
         time_show = 1;
         flagExit=endGame;
         TIME = 1 + (int)((int)t/1000);
