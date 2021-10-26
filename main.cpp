@@ -31,8 +31,9 @@
 //              GLOBAL VARIABLES
 //-----------------------------------------------
 
-#define MED_COLUMNS 5
-#define MED_ROWS 5
+#define MED_COLUMNS 4
+
+#define MED_ROWS 4
 #define SIZE_SQUARE_SMALL 3 // quant mes petit
 #define WIDTH 800
 #define HEIGHT 800
@@ -242,6 +243,7 @@ void display() {
 //            KEYBOARD EVENTS
 //-----------------------------------------------
 void ArrowKey(int key,int x,int y){
+    if(endGame == 0){
     switch (key){
         case GLUT_KEY_RIGHT:
             //moviment jugador
@@ -289,6 +291,7 @@ void ArrowKey(int key,int x,int y){
             }
             break;
     }
+    }
     glutPostRedisplay();
 };
 
@@ -320,15 +323,19 @@ void keyboard(unsigned char key, int x, int y){
 
 void idle(){
     long t;
-    randomMove();
+    
     t=glutGet(GLUT_ELAPSED_TIME); 
-    endGame = maze.checkEnd(agent1.state, agent2.state);
-    if(flagExit != endGame){
+    printf("%d, %d, %d \n", time_show, flagExit, endGame);
+    if(endGame != 0 && flagExit != endGame){
+        printf("HELLLOOOO");
         time_show = 1;
         flagExit=endGame;
-    } else{
-        time_show = TIME - (int)((int)t/1000);
+        TIME = 1 + (int)((int)t/1000);
+    } else if(endGame ==0){
+        randomMove();
+        endGame = maze.checkEnd(agent1.state, agent2.state);
     }
+    time_show = TIME - (int)((int)t/1000);
     if(last_t==0){
         last_t=t;
     }
