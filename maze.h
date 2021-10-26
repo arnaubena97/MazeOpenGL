@@ -5,7 +5,7 @@
 #include <tuple> 
 using namespace std;
 
-
+#define QUIET 2
 
 class Maze {     
     public:       
@@ -114,6 +114,15 @@ class Maze {
             board[(int)p.x+1][(int)p.y] = c;
         }
 
+        int checkEnd(int state1, int state2){
+            if(state1 == QUIET){
+                if(endPosition.Equal(getStartPoint()) ) return 1;
+            }
+            if(state2 == QUIET){
+                if(startPosition.Equal(getEndPoint()) ) return 2;
+            }
+            return 0;
+        }
     private:
         int med_columns;
         int med_rows;

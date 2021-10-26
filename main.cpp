@@ -31,14 +31,17 @@
 //              GLOBAL VARIABLES
 //-----------------------------------------------
 
-#define MED_COLUMNS 8
-#define MED_ROWS 8
+#define MED_COLUMNS 5
+#define MED_ROWS 5
 #define SIZE_SQUARE_SMALL 3 // quant mes petit
 #define WIDTH 800
 #define HEIGHT 800
 
 int TIME = 60;
 int time_show = TIME;
+
+int flagExit = 0;
+int endGame =0;
 
 int COLUMNS = MED_COLUMNS * 2 + 1;
 int ROWS = MED_ROWS * 2 + 1;
@@ -171,9 +174,11 @@ void chargeSquares(){
 //-----------------------------------------------
 //             DISPLAY TEXT
 //-----------------------------------------------
-void display_text(string s){
+void display_text(string s, int color=0){
     float size = 0.3;
-    (time_show<= 10) ? glColor3f(1.0, 0.0, 0.0): glColor3f(0.0, 0.0, 0.0);
+    if(color ==0)(time_show<= 10) ? glColor3f(1.0, 0.0, 0.0): glColor3f(0.0, 0.0, 0.0);
+    if(color==1)(glColor3f(0.0, 1.0, 0.0));
+    if(color==2)(glColor3f(1.0, 0.0, 0.0));
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
     glLoadIdentity();
@@ -217,8 +222,14 @@ void display() {
     agent1.draw();
     agent2.draw();
     
-    if (time_show <=0){
+    if (time_show <=0 && endGame==0){
         display_text("TIME OUT");
+        if (time_show <=-2) exit(0);
+    }else if(endGame==1){
+        display_text("PLAYER 1 WIN", 1);
+        if (time_show <=-2) exit(0);
+    }else if(endGame==2){
+        display_text("PLAYER 2 WIN", 2);
         if (time_show <=-2) exit(0);
     }else{
         display_text("Time left: " + std::to_string(time_show) + "s");
@@ -278,7 +289,6 @@ void ArrowKey(int key,int x,int y){
             }
             break;
     }
-    
     glutPostRedisplay();
 };
 
@@ -312,8 +322,13 @@ void idle(){
     long t;
     randomMove();
     t=glutGet(GLUT_ELAPSED_TIME); 
-    time_show = TIME - (int)((int)t/1000);
-
+    endGame = maze.checkEnd(agent1.state, agent2.state);
+    if(flagExit != endGame){
+        time_show = 1;
+        flagExit=endGame;
+    } else{
+        time_show = TIME - (int)((int)t/1000);
+    }
     if(last_t==0){
         last_t=t;
     }
@@ -333,59 +348,59 @@ void randomMove(){
     bool m1,m2,m3,m4; // controlar si es queda tancat, sino -> while(true)
     int v1;
     int flag = 0;
-        while(flag!=1 && !(m1&&m2&&m3&&m4)){  
-            v1 = rand() % 4;
-            if (v1 == 0){
-                if (maze.canMoveLeft(agent2.position,maze.agent1) && agent2.state==QUIET){
-                    if(agent2.direction!= LEFT){
-                        agent2.rotateLeft();
-                        agent2.direction = LEFT;
-                    }else{
-                        maze.updateLeft(agent2.position, maze.agent2);
-                        agent2.moveLeft(); 
-                    }
-                    flag =1;
+    while(flag!=1 && !(m1&&m2&&m3&&m4)){  
+        v1 = rand() % 4;
+        if (v1 == 0){
+            if (maze.canMoveLeft(agent2.position,maze.agent1) && agent2.state==QUIET){
+                if(agent2.direction!= LEFT){
+                    agent2.rotateLeft();
+                    agent2.direction = LEFT;
+                }else{
+                    maze.updateLeft(agent2.position, maze.agent2);
+                    agent2.moveLeft(); 
                 }
-                m1 = true;
-            }else if (v1 == 1){
-                if (maze.canMoveDown(agent2.position,maze.agent1) && agent2.state==QUIET){
-                    if(agent2.direction!= UP){
-                        agent2.rotateUp();
-                        agent2.direction = UP;
-                    }else{
-                        maze.updateDown(agent2.position, maze.agent2); 
-                        agent2.moveDown(); 
-                    }
-                    flag =1;
+                flag =1;
+            }
+            m1 = true;
+        }else if (v1 == 1){
+            if (maze.canMoveDown(agent2.position,maze.agent1) && agent2.state==QUIET){
+                if(agent2.direction!= UP){
+                    agent2.rotateUp();
+                    agent2.direction = UP;
+                }else{
+                    maze.updateDown(agent2.position, maze.agent2); 
+                    agent2.moveDown(); 
                 }
-                m2 = true;
-            }else if (v1 == 2){
+                flag =1;
+            }
+            m2 = true;
+        }else if (v1 == 2){
 
-                if (maze.canMoveRight(agent2.position,maze.agent1) && agent2.state==QUIET){
-                    if(agent2.direction!= RIGHT){
-                        agent2.rotateRight();
-                        agent2.direction = RIGHT;
-                    }else{
-                        maze.updateRight(agent2.position, maze.agent2); 
-                        agent2.moveRight();
-                    }
-                    flag =1;
-                } 
-                m3 = true;
-            }else if (v1 == 3){
-                if (maze.canMoveUp(agent2.position,maze.agent1) && agent2.state==QUIET){
-                    if(agent2.direction!= DOWN){
-                        agent2.rotateDown();
-                        agent2.direction = DOWN;
-                    }else{
-                        maze.updateUp(agent2.position, maze.agent2);
-                        agent2.moveUp();
-                    }
-                    flag =1;
+            if (maze.canMoveRight(agent2.position,maze.agent1) && agent2.state==QUIET){
+                if(agent2.direction!= RIGHT){
+                    agent2.rotateRight();
+                    agent2.direction = RIGHT;
+                }else{
+                    maze.updateRight(agent2.position, maze.agent2); 
+                    agent2.moveRight();
                 }
-                m4 = true;
-            }  
-        }
+                flag =1;
+            } 
+            m3 = true;
+        }else if (v1 == 3){
+            if (maze.canMoveUp(agent2.position,maze.agent1) && agent2.state==QUIET){
+                if(agent2.direction!= DOWN){
+                    agent2.rotateDown();
+                    agent2.direction = DOWN;
+                }else{
+                    maze.updateUp(agent2.position, maze.agent2);
+                    agent2.moveUp();
+                }
+                flag =1;
+            }
+            m4 = true;
+        }  
+    }
     
 }
 

@@ -246,6 +246,7 @@ class Tank{
                 position.y = roundf(position.y + vy*time_remaining);
                 position.z = 0;
                 state=QUIET;
+                
             }
             else if(state==ROTATE && t<time_remaining){
                 //printf("state: %d, angle: %d , time: %d\n", state, angle, t);
