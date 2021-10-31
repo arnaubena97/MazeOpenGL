@@ -1,3 +1,5 @@
+#include <iostream>
+#include <math.h>   
 class RGB{
     public:    
         float r,g,b;
@@ -27,6 +29,7 @@ class Point{
         this ->z = z;
     }
     bool Equal(Point p){
-        return(x==p.x && y==p.y && z==p.z);
+        //printf("%f, %f, %f \n%f, %f, %f \n -----------\n", x,y,z,p.x,p.y,p.z);
+        return(roundf(x)==roundf(p.x) && roundf(y)==roundf(p.y) && roundf(z)==roundf(p.z));
     }
 };

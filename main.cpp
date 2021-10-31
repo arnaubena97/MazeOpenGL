@@ -10,6 +10,7 @@
 #include "extras.h"
 #include "maze.h"
 #include "square.h"
+#include "dfs.h"
 #include <string.h>
 #include <unistd.h>
 #include <string> 
@@ -31,17 +32,19 @@
 //              GLOBAL VARIABLES
 //-----------------------------------------------
 
-#define MED_COLUMNS 4
-
-#define MED_ROWS 4
+#define MED_COLUMNS 3
+#define MED_ROWS 3
 #define SIZE_SQUARE_SMALL 3 // quant mes petit
 #define WIDTH 800
 #define HEIGHT 800
 
-int TIME = 60;
+int TIME = 600;
+int TIME_PLAYER_OFF = 2;
 int time_show = TIME;
+int time_show_shooted = TIME_PLAYER_OFF;
 
 int flagExit = 0;
+int flagShooted = 0;
 int endGame =0;
 
 int COLUMNS = MED_COLUMNS * 2 + 1;
@@ -58,8 +61,9 @@ long last_t=0;
 
 Maze maze(MED_COLUMNS, MED_ROWS);
 Walls wall(maze.getNumWalls());
-Tank agent1;
-Tank agent2;
+Tank agent1(maze.agent1);
+Tank agent2(maze.agent2);
+dfs intell(COLUMNS, ROWS, maze.board);
 //-----------------------------------------------
 //                FUNCTIONS
 //-----------------------------------------------
@@ -170,6 +174,7 @@ void chargeSquares(){
 
     agent2.setSizesXY(SIZE_SQUARE_W, SIZE_SQUARE_H, 30.0);
     agent2.setPosition(maze.getEndPoint());
+    
 }
 
 //-----------------------------------------------
@@ -220,9 +225,12 @@ void display() {
 
     wall.draw(); // walls
     wall.drawFloor(HEIGHT, WIDTH); // floor
-    agent1.draw();
-    agent2.draw();
-    
+    if(flagShooted !=1){
+        agent1.draw();
+    }
+    if(flagShooted !=2){
+        agent2.draw();
+    }
     if (time_show <=0 && endGame==0){
         display_text("TIME OUT");
         if (time_show <=-2) exit(0);
@@ -296,6 +304,7 @@ void ArrowKey(int key,int x,int y){
 };
 
 void keyboard(unsigned char key, int x, int y){
+    printf("%c",key);
     switch (key) {
         case 27: // exit with ESC
         exit(0);
@@ -314,6 +323,12 @@ void keyboard(unsigned char key, int x, int y){
         zoomfactor -= 0.1;
     else if (key=='p')
         zoomfactor += 0.1;
+    else if (key==' '){
+        if(agent1.state == QUIET){// sino es produeixen bugs de mig moviments
+            int len = maze.getLenShoot(agent1.symbol, agent1.direction);
+            agent1.shoot(len);
+        }
+    }
     glutPostRedisplay();
 };
 
@@ -323,14 +338,45 @@ void keyboard(unsigned char key, int x, int y){
 
 void idle(){
     long t;
-    
     t=glutGet(GLUT_ELAPSED_TIME); 
     if(endGame != 0 && flagExit != endGame){
         time_show = 1;
         flagExit=endGame;
         TIME = 1 + (int)((int)t/1000);
     } else if(endGame ==0){
-        randomMove();
+        
+        //printf("shot x: %f y:%f\n", agent1.position_shoot.x, agent1.position_shoot.y);
+        //printf("pos x: %f y:%f\n", agent2.position.x, agent2.position.y);
+        if(agent1.position_shoot.Equal(agent2.position) && flagShooted==0){
+            //printf("AGENT2 DEAD\n");
+            maze.resetAgent(maze.agent2);
+            flagShooted = 2;
+            time_show_shooted = (int)((int)t/1000);
+        }
+        if(agent2.position_shoot.Equal(agent1.position) && flagShooted==0){
+            //printf("AGENT1 DEAD\n");
+            maze.resetAgent(maze.agent1);
+            flagShooted = 1;
+            time_show_shooted = (int)((int)t/1000);
+        }
+        
+        if((int)((int)t/1000) - time_show_shooted > TIME_PLAYER_OFF && flagShooted!=0){
+            if(flagShooted == 2){
+                maze.putPlayer(maze.agent2, maze.endPosition);
+                agent2.reset(maze.endPosition);
+                agent2.position_shoot = agent2.position;
+                flagShooted = 0;
+            }else if(flagShooted ==1){
+                maze.putPlayer(maze.agent1, maze.startPosition);
+                agent1.reset(maze.startPosition);
+                agent1.position_shoot = agent1.position;
+                flagShooted = 0;
+            }
+        }
+        if(flagShooted != 2){
+            randomMove();
+        }
+        
         endGame = maze.checkEnd(agent1.state, agent2.state);
     }
     time_show = TIME - (int)((int)t/1000);
@@ -350,12 +396,12 @@ void idle(){
 //            RANDOM MOVE --> ADD DFS??
 //-----------------------------------------------
 void randomMove(){
-    bool m1,m2,m3,m4; // controlar si es queda tancat, sino -> while(true)
+    bool m1,m2,m3,m4, m5; // controlar si es queda tancat, sino -> while(true)
     int v1;
     int flag = 0;
     while(flag!=1 && !(m1&&m2&&m3&&m4)){  
-        v1 = rand() % 4;
-        if (v1 == 0){
+        v1 = rand() % 9;
+        if (v1 == 8 || v1 == 1){
             if (maze.canMoveLeft(agent2.position,maze.agent1) && agent2.state==QUIET){
                 if(agent2.direction!= LEFT){
                     agent2.rotateLeft();
@@ -367,7 +413,7 @@ void randomMove(){
                 flag =1;
             }
             m1 = true;
-        }else if (v1 == 1){
+        }else if (v1 == 2 || v1 == 3){
             if (maze.canMoveDown(agent2.position,maze.agent1) && agent2.state==QUIET){
                 if(agent2.direction!= UP){
                     agent2.rotateUp();
@@ -379,8 +425,7 @@ void randomMove(){
                 flag =1;
             }
             m2 = true;
-        }else if (v1 == 2){
-
+        }else if (v1 == 4 || v1 == 5){
             if (maze.canMoveRight(agent2.position,maze.agent1) && agent2.state==QUIET){
                 if(agent2.direction!= RIGHT){
                     agent2.rotateRight();
@@ -392,7 +437,7 @@ void randomMove(){
                 flag =1;
             } 
             m3 = true;
-        }else if (v1 == 3){
+        }else if (v1 == 6 || v1 == 7){
             if (maze.canMoveUp(agent2.position,maze.agent1) && agent2.state==QUIET){
                 if(agent2.direction!= DOWN){
                     agent2.rotateDown();
@@ -405,8 +450,13 @@ void randomMove(){
             }
             m4 = true;
         }  
+        else if((v1 == 9 ||v1==0) && agent2.state==QUIET){
+            int len = maze.getLenShoot(agent2.symbol, agent2.direction);
+            agent2.shoot(len);
+            flag =1;
+            m5 = true;
+        }
     }
-    
 }
 
 /*--------------------------------------------------------*/
@@ -458,8 +508,6 @@ void ReadJPEG(char *filename,unsigned char **image,int *width, int *height)
   free(buffer);
   jpeg_finish_decompress(&cinfo);
 } 
-
-
 
 /*--------------------------------------------------------*/
 /*--------------------------------------------------------*/

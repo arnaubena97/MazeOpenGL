@@ -3,9 +3,15 @@
 #include <vector>
 #include <random>
 #include <tuple> 
+
 using namespace std;
 
 #define QUIET 2
+
+#define UP 1
+#define DOWN 2
+#define LEFT 3
+#define RIGHT 4
 
 class Maze {     
     public:       
@@ -76,7 +82,16 @@ class Maze {
             }
             return Point(0,0);
         }
-        
+        Point getSpecificPoint(char sym){
+            for (int i = 0; i < columns; i++) {
+                for (int j = 0; j < rows; j++) {
+                    if (board[i][j] == sym){
+                        return Point(i, j, 0);
+                    }
+                }
+            }
+            return Point(0,0);
+        }
         // functions to know if movement is possible
         bool canMoveUp(Point p, char c){
             /* s'ha de pensar que el board el tenim girat respecte al dibuix grafic*/
@@ -118,10 +133,48 @@ class Maze {
             if(state1 == QUIET){
                 if(endPosition.Equal(getStartPoint()) ) return 1;
             }
-            if(state2 == QUIET){
-                if(startPosition.Equal(getEndPoint()) ) return 2;
-            }
+            // si mirem quan esta quiet no entra..
+            if(startPosition.Equal(getEndPoint()) ) return 2;
+            
             return 0;
+        }
+    
+        int getLenShoot(char sym, int direction){
+            Point pos = getSpecificPoint(sym);
+            int x = pos.x;
+            int y = pos.y;
+            if(direction == DOWN){
+                while(board[x][y] != '#'){
+                    y +=1;
+                }
+                return y-pos.y-1;
+            }
+            else if (direction == LEFT){
+                while(board[x][y] != '#'){
+                    x -=1;
+                }
+                return pos.x-x -1;
+            }
+            else if (direction == UP){
+                while(board[x][y] != '#'){
+                    y -=1;
+                }
+                return pos.y-y -1;
+            }
+            else if (direction == RIGHT){
+                while(board[x][y] != '#'){
+                    x +=1;
+                }
+                return x-pos.x-1;
+            }
+        }
+        void resetAgent(char sym){
+            Point p = getSpecificPoint(sym);
+            board[int(p.x)][int(p.y)] = ' ';
+            //display();
+        }
+        void putPlayer(char sym, Point p){
+            board[int(p.x)][int(p.y)] = sym;
         }
     private:
         int med_columns;

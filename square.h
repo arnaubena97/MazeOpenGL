@@ -12,6 +12,8 @@ using namespace std;
 #define MOVE 1
 #define QUIET 2
 #define ROTATE 3
+#define SHOOTING 4
+
 
 #define UP 1
 #define DOWN 2
@@ -163,17 +165,21 @@ class Walls {
 class Tank{     
     public:       
         Point position; // Current position
+        Point position_shoot;
         float size_x, size_y, size_z; // size of square
         float vx,vy, vz, valpha; // Velocity vector
+        float vsx, vsy;
         int state; 
         int direction; //1NORTH 2SOUTH 3WEST 4EAST
         long time_remaining, time_mov;
         int angle, teoric_angle;
-
-        Tank(){
+        char symbol;
+        bool flag = false;
+        Tank(char sym){
             state = QUIET;
             time_mov= 300;
             direction = RIGHT;
+            symbol = sym;
         }
         
         void setSizesXY(float x, float y, float z = 0){
@@ -184,9 +190,11 @@ class Tank{
         //functions to set the position of square
         void setPosition(float x, float y, float z = 0){
             position = Point(x,y,z);
+            position_shoot = Point(x,y,z);
         }
         void setPosition(Point pos){
             position = pos;
+            position_shoot = pos;
         }
 
         void draw(){
@@ -229,7 +237,18 @@ class Tank{
             drawWheels(x0, x1, x3, x5, x6, y0, y1, y2, z6, z3, xpw1, xpw2, -0.5, 1);
             drawBody(x5, x6, y1, y3, z5, z6);
             drawCanon(x1, x2, y1, y4, z2, z5, z6);
+            
             glRotatef(-angle, 0,-1,0);
+            glPopMatrix();
+
+
+            glPushMatrix();
+            x2 = (position_shoot.x + 0.5)* size_x;
+            y1 = (position_shoot.z + (1.0/6.0)) * size_z;
+            y4 = (position_shoot.z + 1) * size_z;
+            z2 = (position_shoot.y + 0.5) * size_y;
+
+            drawShoot(x2, y1, y4, z2);
             glPopMatrix();
             
         }
@@ -239,12 +258,14 @@ class Tank{
                 position.x = position.x + vx*t;
                 position.y = position.y + vy*t;
                 position.z = 0;
+                position_shoot = position;
                 time_remaining-=t;
                 }
             else if(state==MOVE && t>=time_remaining){
                 position.x = roundf(position.x + vx*time_remaining);
                 position.y = roundf(position.y + vy*time_remaining);
                 position.z = 0;
+                position_shoot = position;
                 state=QUIET;
                 
             }
@@ -256,6 +277,26 @@ class Tank{
             else if(state==ROTATE && t>=time_remaining){
                 angle = teoric_angle;
                 state=QUIET;
+            }
+            else if(state==SHOOTING && t<time_remaining){
+                position_shoot.x = position_shoot.x + vsx*t;
+                position_shoot.y = position_shoot.y + vsy*t;
+                position_shoot.z = 0;
+                time_remaining-=t;
+            }
+            else if(state==SHOOTING && t>=time_remaining && !flag){
+                position_shoot.x = roundf(position_shoot.x + vsx*time_remaining);
+                position_shoot.y = roundf(position_shoot.y + vsy*time_remaining);
+                position_shoot.z = 0;
+                flag = true;
+                
+
+            }else if (state ==SHOOTING && t>=time_remaining && flag){
+                position_shoot.x = position.x;
+                position_shoot.y = position.y;
+                position_shoot.z = 0;
+                state=QUIET;
+                flag = false;
             }
 
         }
@@ -273,8 +314,6 @@ class Tank{
         void moveRight(){
             init_movement(position.x+1,position.y,time_mov);
         } 
-
-        
 
         void rotateLeft(){
             if(direction == UP){
@@ -333,6 +372,26 @@ class Tank{
             }
         }
 
+        void shoot(int len){
+            
+            len > 3 ? len = 3 : len=len;// maxim distancia disparo 3
+            //com girem el pla, nomes hem de augmentar x
+            if(direction == LEFT){
+                init_movement_shoot(position_shoot.x-len,position_shoot.y,time_mov);
+            }
+            else if(direction == RIGHT){
+                init_movement_shoot(position_shoot.x+len,position_shoot.y,time_mov);
+            }
+            else if(direction == UP){
+                init_movement_shoot(position_shoot.x,position_shoot.y-len,time_mov);
+            }
+            else if(direction == DOWN){
+                init_movement_shoot(position_shoot.x,position_shoot.y+len,time_mov);
+            }
+        }
+        void reset(Point p){
+            position = p;
+        }
     private:
         void init_movement(int destination_x,int destination_y,int duration){
             vx = (destination_x - position.x)/duration;
@@ -348,6 +407,13 @@ class Tank{
             //printf("time: %ld, valpa: %f \n", time_remaining ,valpha);
         }
 
+        void init_movement_shoot(int destinations_x,int destinations_y,int duration){
+            vsx = (destinations_x - position_shoot.x)/duration;
+            vsy = (destinations_y - position_shoot.y)/duration;
+            state=SHOOTING;
+            time_remaining=duration;
+        }
+        
 
         void drawWheels( GLfloat x0,  GLfloat x1,  GLfloat x3,  GLfloat x5,  GLfloat x6,  GLfloat y0, GLfloat y1, GLfloat y2,  GLfloat z1, GLfloat z5, GLfloat xpw1, GLfloat xpw2, float wheel, bool side){
 
@@ -503,5 +569,13 @@ class Tank{
 
         }
 
+        void drawShoot(GLfloat x2,GLfloat y1, GLfloat y4, GLfloat z2){
+            GLUquadricObj *p = gluNewQuadric();
+            glTranslatef(+x2, +y4 - (y1/2)*1.05, +z2);
+            glColor3f(1,1,1);
+            gluSphere(p, (y1/2)*0.95, 500, 500);
+            glTranslatef(-x2, -y4+ (y1/2)*1.05,  -z2);
+            glEnd();
+        }
 };
 
