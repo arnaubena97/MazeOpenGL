@@ -32,20 +32,20 @@
 //              GLOBAL VARIABLES
 //-----------------------------------------------
 
-#define MED_COLUMNS 3
-#define MED_ROWS 3
+#define MED_COLUMNS 6 // Tamany del tauler
+#define MED_ROWS 6
 #define SIZE_SQUARE_SMALL 3 // quant mes petit
-#define WIDTH 800
+#define WIDTH 800  //tamany de la finestra
 #define HEIGHT 800
 
-int TIME = 600;
-int TIME_PLAYER_OFF = 2;
-int time_show = TIME;
-int time_show_shooted = TIME_PLAYER_OFF;
+int TIME = 60; // Temps de joc
+int TIME_PLAYER_OFF = 2; // temps que el jugador desapareix
+int time_show = TIME;  // auxiliar pel temps de joc
+int time_show_shooted = TIME_PLAYER_OFF; // auxiliar per un jugador disparat
 
-int flagExit = 0;
-int flagShooted = 0;
-int endGame =0;
+int flagExit = 0; // flag per marxar del joc
+int flagShooted = 0; // flag per saber si han disparat
+int endGame =0; // flag marxar del joc
 
 int COLUMNS = MED_COLUMNS * 2 + 1;
 int ROWS = MED_ROWS * 2 + 1;
@@ -58,16 +58,19 @@ int anglebeta = 90;
 float zoomfactor = 1.0;
 long last_t=0;
 #define PI 3.1416
+int index_path = 0; // index del cami pel dfs agafar el proxim moviment
 
-Maze maze(MED_COLUMNS, MED_ROWS);
-Walls wall(maze.getNumWalls());
-Tank agent1(maze.agent1);
-Tank agent2(maze.agent2);
-dfs intell(COLUMNS, ROWS, maze.board);
+Maze maze(MED_COLUMNS, MED_ROWS);// crar el laberint
+Walls wall(maze.getNumWalls()); // afegir les parets
+Tank agent1(maze.agent1); // agent1 es l'usuari
+Tank agent2(maze.agent2); // agent2 te IA
+
+dfs intell(COLUMNS, ROWS, maze.board); // fem el DFS per trobar el cami
 //-----------------------------------------------
 //                FUNCTIONS
 //-----------------------------------------------
 void randomMove();
+void dfsMove();
 void display();
 void chargeSquares();
 void keyboard(unsigned char c,int x,int y);
@@ -251,55 +254,56 @@ void display() {
 //            KEYBOARD EVENTS
 //-----------------------------------------------
 void ArrowKey(int key,int x,int y){
-    if(endGame == 0){
-    switch (key){
-        case GLUT_KEY_RIGHT:
-            //moviment jugador
-            if (maze.canMoveRight(agent1.position,maze.agent2) && agent1.state==QUIET){
-                if(agent1.direction!= RIGHT){
-                    agent1.rotateRight();
-                    agent1.direction = RIGHT;
-                }else{
-                    maze.updateRight(agent1.position, maze.agent1); 
-                    agent1.moveRight();
+    if(endGame == 0 && flagShooted!=1){
+        switch (key){
+            case GLUT_KEY_RIGHT:
+                //moviment jugador
+                if (maze.canMoveRight(agent1.position,maze.agent2) && agent1.state==QUIET){
+                    if(agent1.direction!= RIGHT){
+                        agent1.rotateRight();
+                        agent1.direction = RIGHT;
+                    }else{
+                        maze.updateRight(agent1.position, maze.agent1); 
+                        agent1.moveRight();
+                    }
+                } 
+                break;
+            case GLUT_KEY_LEFT:
+                if (maze.canMoveLeft(agent1.position,maze.agent2) && agent1.state==QUIET){
+                    if(agent1.direction!= LEFT){
+                        agent1.rotateLeft();
+                        agent1.direction = LEFT;
+                    }else{
+                    maze.updateLeft(agent1.position, maze.agent1);
+                    agent1.moveLeft(); 
+                    }
                 }
-            } 
-            break;
-        case GLUT_KEY_LEFT:
-            if (maze.canMoveLeft(agent1.position,maze.agent2) && agent1.state==QUIET){
-                if(agent1.direction!= LEFT){
-                    agent1.rotateLeft();
-                    agent1.direction = LEFT;
-                }else{
-                maze.updateLeft(agent1.position, maze.agent1);
-                agent1.moveLeft(); 
+                break;
+            case GLUT_KEY_DOWN:
+                if (maze.canMoveUp(agent1.position,maze.agent2) && agent1.state==QUIET){
+                    if(agent1.direction!= DOWN){
+                        agent1.rotateDown();
+                        agent1.direction = DOWN;
+                    }else{
+                        maze.updateUp(agent1.position, maze.agent1);
+                        agent1.moveUp();
+                    }
                 }
-            }
-            break;
-        case GLUT_KEY_DOWN:
-            if (maze.canMoveUp(agent1.position,maze.agent2) && agent1.state==QUIET){
-                if(agent1.direction!= DOWN){
-                    agent1.rotateDown();
-                    agent1.direction = DOWN;
-                }else{
-                    maze.updateUp(agent1.position, maze.agent1);
-                    agent1.moveUp();
+                break;
+            case GLUT_KEY_UP:
+                if (maze.canMoveDown(agent1.position,maze.agent2) && agent1.state==QUIET){
+                    if(agent1.direction!= UP){
+                        agent1.rotateUp();
+                        agent1.direction = UP;
+                    }else{
+                    maze.updateDown(agent1.position, maze.agent1); 
+                    agent1.moveDown(); 
+                    }
                 }
-            }
-            break;
-        case GLUT_KEY_UP:
-            if (maze.canMoveDown(agent1.position,maze.agent2) && agent1.state==QUIET){
-                if(agent1.direction!= UP){
-                    agent1.rotateUp();
-                    agent1.direction = UP;
-                }else{
-                maze.updateDown(agent1.position, maze.agent1); 
-                agent1.moveDown(); 
-                }
-            }
-            break;
+                break;
+        }
     }
-    }
+    //maze.display();
     glutPostRedisplay();
 };
 
@@ -359,13 +363,13 @@ void idle(){
             flagShooted = 1;
             time_show_shooted = (int)((int)t/1000);
         }
-        
         if((int)((int)t/1000) - time_show_shooted > TIME_PLAYER_OFF && flagShooted!=0){
             if(flagShooted == 2){
                 maze.putPlayer(maze.agent2, maze.endPosition);
                 agent2.reset(maze.endPosition);
                 agent2.position_shoot = agent2.position;
                 flagShooted = 0;
+                index_path = 0;
             }else if(flagShooted ==1){
                 maze.putPlayer(maze.agent1, maze.startPosition);
                 agent1.reset(maze.startPosition);
@@ -374,7 +378,8 @@ void idle(){
             }
         }
         if(flagShooted != 2){
-            randomMove();
+            //randomMove();
+            dfsMove();
         }
         
         endGame = maze.checkEnd(agent1.state, agent2.state);
@@ -393,7 +398,7 @@ void idle(){
 }
 
 //-----------------------------------------------
-//            RANDOM MOVE --> ADD DFS??
+//            RANDOM MOVE --> ADD DFS
 //-----------------------------------------------
 void randomMove(){
     bool m1,m2,m3,m4, m5; // controlar si es queda tancat, sino -> while(true)
@@ -458,7 +463,70 @@ void randomMove(){
         }
     }
 }
+char revert(char c){
+    char ret;
+    if(c=='d') ret = 'l';
+    else if(c=='u') ret = 'r';
+    else if(c=='l') ret = 'd';
+    else if(c=='r') ret = 'u';
+    return ret;
+}
 
+void dfsMove(){
+    int v1 = rand() % 3; // Triem aleatoriament si ens movem o disparem
+    if(v1 == 0 || v1 == 1){//MOVE
+        char move = revert(intell.dir[index_path]);
+        //printf("%d, %d, %c\n",intell.lenPath,index_path,move);
+        if(move == 'd'){
+            if (maze.canMoveUp(agent2.position,maze.agent1) && agent2.state==QUIET){
+                if(agent2.direction!= DOWN){
+                    agent2.rotateDown();
+                    agent2.direction = DOWN;
+                }else{
+                    maze.updateUp(agent2.position, maze.agent2);
+                    agent2.moveUp();
+                    index_path ++;
+                }
+            }
+        }else if(move == 'u'){
+            if (maze.canMoveDown(agent2.position,maze.agent1) && agent2.state==QUIET){
+                if(agent2.direction!= UP){
+                    agent2.rotateUp();
+                    agent2.direction = UP;
+                }else{
+                    maze.updateDown(agent2.position, maze.agent2); 
+                    agent2.moveDown(); 
+                    index_path ++;
+                }
+            }
+        }else if(move == 'l'){
+            if (maze.canMoveLeft(agent2.position,maze.agent1) && agent2.state==QUIET){
+                if(agent2.direction!= LEFT){
+                    agent2.rotateLeft();
+                    agent2.direction = LEFT;
+                }else{
+                    maze.updateLeft(agent2.position, maze.agent2);
+                    agent2.moveLeft();
+                    index_path ++;
+                }
+            }
+        }else if(move == 'r'){
+            if (maze.canMoveRight(agent2.position,maze.agent1) && agent2.state==QUIET){
+                if(agent2.direction!= RIGHT){
+                    agent2.rotateRight();
+                    agent2.direction = RIGHT;
+                }else{
+                    maze.updateRight(agent2.position, maze.agent2); 
+                    agent2.moveRight();
+                    index_path ++;
+                } 
+            } 
+        }
+    }else if( v1==2 && agent2.state==QUIET){//SHOOT
+        int len = maze.getLenShoot(agent2.symbol, agent2.direction);
+        agent2.shoot(len);
+    }
+}
 /*--------------------------------------------------------*/
 /*--------------------------------------------------------*/
 void ReadJPEG(char *filename,unsigned char **image,int *width, int *height)

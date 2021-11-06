@@ -9,6 +9,8 @@ class dfs{
 		bool ** visited;
 		bool ** path;
 		stack<char> directions;
+		char * dir;
+		int lenPath;
 		dfs(int m, int n, char ** board){
 			M = m;
 			N = n;
@@ -52,14 +54,19 @@ class dfs{
 					d.pop();
 				}
 				if (m == M-2 && n == N-2) {
-					/*cout << "HE ARRIBAT \n";
-					//display(p);
+					dir = new char[d.size()];
+					int index = 0;
 					while (!d.empty()) {
+						dir[index] = d.top();
         				cout << ' ' << d.top();
         				d.pop();
+						index++;
    					}
-					printf("\n");*/
-					//printPath(visited);
+					lenPath = index;
+					printf("\n");
+					//display(visited);
+					printf("\n");
+					display(path);
 					//_getch();
 					return;
 				}
