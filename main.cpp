@@ -12,9 +12,15 @@
 #include "square.h"
 #include "dfs.h"
 #include <string.h>
-#include <unistd.h>
 #include <string> 
 #include <iostream>
+#include <stdio.h>
+#include <vector>
+// Linux headers
+#include <fcntl.h> // Contains file controls like O_RDWR
+#include <errno.h> // Error integer and strerror() function
+#include <termios.h> // Contains POSIX terminal control definitions
+#include <unistd.h> // write(), read(), close()
 #if  __linux__ 
     #include <GL/glut.h>
     #include "jpeglib.h"
@@ -31,12 +37,13 @@
 //-----------------------------------------------
 //              GLOBAL VARIABLES
 //-----------------------------------------------
-
+#define ARDUINO true
 #define MED_COLUMNS 6 // Tamany del tauler
 #define MED_ROWS 6
 #define SIZE_SQUARE_SMALL 3 // quant mes petit
 #define WIDTH 800  //tamany de la finestra
 #define HEIGHT 800
+
 
 int TIME = 60; // Temps de joc
 int TIME_PLAYER_OFF = 2; // temps que el jugador desapareix
@@ -66,6 +73,9 @@ Tank agent1(maze.agent1); // agent1 es l'usuari
 Tank agent2(maze.agent2); // agent2 te IA
 
 dfs intell(COLUMNS, ROWS, maze.board); // fem el DFS per trobar el cami
+
+FILE *serialPort;
+int code = 0;
 //-----------------------------------------------
 //                FUNCTIONS
 //-----------------------------------------------
@@ -78,7 +88,8 @@ void ArrowKey(int key,int x,int y);
 void idle();
 void ReadJPEG(char *filename,unsigned char **image,int *width, int *height);
 void LoadTexture(char *filename,int dim);
-
+void readSerialPort();
+void moveSerialPort();
 
 //-----------------------------------------------
 //             MAIN PROCEDURE
@@ -124,6 +135,8 @@ void PositionObserver(float alpha,float beta,int radi)
 
 int main(int argc,char *argv[])
 {
+    
+    //readSerialPort();
     anglealpha=90;
     anglebeta=30;
     chargeSquares();
@@ -138,8 +151,18 @@ int main(int argc,char *argv[])
         
     glutDisplayFunc(display);
     glutKeyboardFunc(keyboard);
-    glutSpecialFunc(ArrowKey);
+    if(!ARDUINO){
+        glutSpecialFunc(ArrowKey);
+    }else{
+        
+        system( "MODE /dev/cu.usbserial-0001 : BAUD=9600 PARITY=n DATA=8 STOP=1" );
+        serialPort = fopen("/dev/cu.usbserial-0001", "r" );
 
+        if (serialPort == NULL) {
+            printf ("Error: unable to open serial port COM4\n");
+            exit (1);
+        }
+    }
 
     glutIdleFunc(idle);
 
@@ -254,6 +277,7 @@ void display() {
 //            KEYBOARD EVENTS
 //-----------------------------------------------
 void ArrowKey(int key,int x,int y){
+    //printf(" %d \n",key);
     if(endGame == 0 && flagShooted!=1){
         switch (key){
             case GLUT_KEY_RIGHT:
@@ -341,6 +365,10 @@ void keyboard(unsigned char key, int x, int y){
 //-----------------------------------------------
 
 void idle(){
+    if(ARDUINO){
+    //readSerialPort();
+    moveSerialPort();
+    }
     long t;
     t=glutGet(GLUT_ELAPSED_TIME); 
     if(endGame != 0 && flagExit != endGame){
@@ -611,4 +639,35 @@ void LoadTexture(char *filename,int dim)
 
   free(buffer);
   free(buffer2);
+}
+
+void moveSerialPort(){
+    readSerialPort();
+    if (code != 0){
+        ArrowKey(code, 0, 0);
+    }
+}
+
+void readSerialPort(){
+    //int code = 0;
+    char t[2];
+    char * b;
+    //fwrite (buffer , sizeof(char), sizeof(buffer), serialPort);
+    size_t n;
+    //cout << b;
+    //char * t = fgetln(serialPort,&n);
+    printf("helrrrrrrrrrrrrlo\n");
+    b=fgets (t,2, serialPort);
+    printf("11111111111hello   %c\n", t);
+     //fclose (pFile);
+    //cout << t;
+    if (t == "1"){
+        code = 101;
+    }else if (t == "2"){
+        code = 103;
+    }else if (t == "3"){
+        code = 102;
+    }else if (t == "4"){
+        code = 100;
+    }
 }
