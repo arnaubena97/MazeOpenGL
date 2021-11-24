@@ -135,6 +135,7 @@ int main(int argc,char *argv[])
     glutCreateWindow("Maze board");
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_TEXTURE_2D);
+    glEnable(GL_LIGHTING);
         
     glutDisplayFunc(display);
     glutKeyboardFunc(keyboard);
@@ -246,7 +247,7 @@ void display() {
     }else{
         display_text("Time left: " + std::to_string(time_show) + "s");
     }
-    
+
     glutSwapBuffers();
 }
 

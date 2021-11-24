@@ -19,6 +19,7 @@ using namespace std;
 #define DOWN 2
 #define LEFT 3
 #define RIGHT 4
+#define PI 3.1416 
 
 
 class SquareWall {     
@@ -238,6 +239,9 @@ class Tank{
             drawBody(x5, x6, y1, y3, z5, z6);
             drawCanon(x1, x2, y1, y4, z2, z5, z6);
             
+            //light
+            lighting();
+
             glRotatef(-angle, 0,-1,0);
             glPopMatrix();
 
@@ -372,6 +376,51 @@ class Tank{
             }
         }
 
+        void lighting(){
+
+            GLfloat direction_light[] = {};
+
+            //em pilla les coordenades del tank del usuari en la posició d'inici i no les actulitza
+            if(direction == UP){
+                direction_light[0] = position.x;
+                direction_light[1] = position.y + 10;
+                direction_light[2] = 1;
+
+            }else if(direction == DOWN){
+                direction_light[0] = position.x;
+                direction_light[1] = position.y - 10;
+                direction_light[2] = 1;
+
+            }else if(direction == RIGHT){
+                direction_light[0] = position.x - 10;
+                direction_light[1] = position.y;
+                direction_light[2] = 1;
+
+            }else if(direction == LEFT){
+                direction_light[0] = position.x + 10;
+                direction_light[1] = position.y;
+                direction_light[2] = 1;
+            }
+            printf("X: %d, Y: %d\n", position.x, position.y);
+
+            GLfloat color[4];
+            GLfloat position_light[] = {position.x, position.y-10, position.z, 1};
+            GLfloat color_light[] = {155, 249, 129, 1};
+            
+            //cout<<"prova"<<endl;
+            
+            glLightfv(GL_LIGHT1, GL_POSITION, position_light);
+            glLightfv(GL_LIGHT1,GL_DIFFUSE,color_light);
+            glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, direction_light);
+            
+            glLightf(GL_LIGHT1,GL_CONSTANT_ATTENUATION,0.5);
+            glLightf(GL_LIGHT1,GL_LINEAR_ATTENUATION,0.0);
+            glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 10.0);
+            
+            glEnable(GL_LIGHT1);
+	    }
+
+
         void shoot(int len){
             
             len > 3 ? len = 3 : len=len;// maxim distancia disparo 3
@@ -413,6 +462,8 @@ class Tank{
             state=SHOOTING;
             time_remaining=duration;
         }
+
+
         
 
         void drawWheels( GLfloat x0,  GLfloat x1,  GLfloat x3,  GLfloat x5,  GLfloat x6,  GLfloat y0, GLfloat y1, GLfloat y2,  GLfloat z1, GLfloat z5, GLfloat xpw1, GLfloat xpw2, float wheel, bool side){
