@@ -52,6 +52,12 @@ class SquareWall {
             glPolygonMode(GL_FRONT,GL_FILL);
             glPolygonMode(GL_BACK,GL_LINE);
 
+            GLfloat material[4];
+            material[0]=1.0; material[1]=1.0; material[2]=1.0; material[3]=1.0; 
+            glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,material);
+  
+
+
             glEnable(GL_TEXTURE_2D);
             glBindTexture(GL_TEXTURE_2D,0);
             glBegin(GL_QUADS); // BACK
@@ -240,7 +246,7 @@ class Tank{
             drawCanon(x1, x2, y1, y4, z2, z5, z6);
             
             //light
-            lighting();
+            //lighting();
 
             glRotatef(-angle, 0,-1,0);
             glPopMatrix();

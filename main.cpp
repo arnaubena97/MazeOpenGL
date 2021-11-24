@@ -212,7 +212,10 @@ void display_text(string s, int color=0){
 //-----------------------------------------------
 
 void display() {
-    
+    GLint position[4];
+      GLfloat color[4];
+  GLfloat material[4];
+
     glClearColor(0.8,0.8,0.8,0.0);
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
@@ -226,6 +229,15 @@ void display() {
     glOrtho(-(WIDTH*zoomfactor),WIDTH*zoomfactor,-(HEIGHT*zoomfactor),HEIGHT*zoomfactor,100,2000);
 
     glMatrixMode(GL_MODELVIEW);
+    
+  //-- Ambient light
+  
+  position[0]=WIDTH/2; position[1]=0; position[2]=-HEIGHT/2; position[3]=1; 
+  glLightiv(GL_LIGHT0,GL_POSITION,position);
+  
+  color[0]=0.1; color[1]=0.1; color[2]=0.1; color[3]=1;
+  glLightfv(GL_LIGHT0,GL_DIFFUSE,color);
+  glEnable(GL_LIGHT0);
 
     wall.draw(); // walls
     wall.drawFloor(HEIGHT, WIDTH); // floor
@@ -607,7 +619,9 @@ void LoadTexture(char *filename,int dim)
 
   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-  glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
+  //glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
+  glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
+  
   glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,dim,dim,0,GL_RGB,GL_UNSIGNED_BYTE,buffer2);
 
   free(buffer);
