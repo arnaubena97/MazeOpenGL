@@ -167,6 +167,7 @@ class Maze {
                 }
                 return x-pos.x-1;
             }
+            return 0;
         }
         void resetAgent(char sym){
             Point p = getSpecificPoint(sym);

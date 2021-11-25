@@ -58,7 +58,7 @@ class dfs{
 					int index = 0;
 					while (!d.empty()) {
 						dir[index] = d.top();
-        				cout << ' ' << d.top();
+        				//cout << ' ' << d.top();
         				d.pop();
 						index++;
    					}
@@ -66,7 +66,7 @@ class dfs{
 					printf("\n");
 					//display(visited);
 					printf("\n");
-					display(path);
+					//display(path);
 					//_getch();
 					return;
 				}

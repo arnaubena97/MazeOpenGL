@@ -21,6 +21,7 @@
 #include <errno.h> // Error integer and strerror() function
 #include <termios.h> // Contains POSIX terminal control definitions
 #include <unistd.h> // write(), read(), close()
+#include <thread>
 #if  __linux__ 
     #include <GL/glut.h>
     #include "jpeglib.h"
@@ -30,6 +31,7 @@
     #include <OpenGL/gl.h>
     #include "jpeg-9d3/jpeglib.h"
 #endif
+using namespace std;
 
 
 
@@ -74,8 +76,11 @@ Tank agent2(maze.agent2); // agent2 te IA
 
 dfs intell(COLUMNS, ROWS, maze.board); // fem el DFS per trobar el cami
 
+
 FILE *serialPort;
 int code = 0;
+
+
 //-----------------------------------------------
 //                FUNCTIONS
 //-----------------------------------------------
@@ -90,7 +95,7 @@ void ReadJPEG(char *filename,unsigned char **image,int *width, int *height);
 void LoadTexture(char *filename,int dim);
 void readSerialPort();
 void moveSerialPort();
-
+void count();
 //-----------------------------------------------
 //             MAIN PROCEDURE
 //-----------------------------------------------
@@ -133,6 +138,19 @@ void PositionObserver(float alpha,float beta,int radi)
   gluLookAt(x,y,z,    WIDTH/2.0,20.0, HEIGHT/2.0,    upx,upy,upz);
 }
 
+void count(){
+    int arg=100;
+    for(int i = 0; i< arg; i++){
+        printf("%d\n", i);
+    }
+}
+void foo(int Z)
+{
+    for (int i = 0; i < Z; i++) {
+        cout << "Thread using function"
+               " pointer as callable\n";
+    }
+}
 int main(int argc,char *argv[])
 {
     
@@ -154,14 +172,14 @@ int main(int argc,char *argv[])
     if(!ARDUINO){
         glutSpecialFunc(ArrowKey);
     }else{
-        
-        system( "MODE /dev/cu.usbserial-0001 : BAUD=9600 PARITY=n DATA=8 STOP=1" );
-        serialPort = fopen("/dev/cu.usbserial-0001", "r" );
+        /*
+        system( "MODE /dev/cu.usbmodem14201 : BAUD=9600 PARITY=n DATA=8 STOP=1" );
+        serialPort = fopen("/dev/cu.usbmodem14201", "r" );
 
         if (serialPort == NULL) {
-            printf ("Error: unable to open serial port COM4\n");
+            printf ("Error: unable to open serial port cu.usbmodem14201\n");
             exit (1);
-        }
+        }*/
     }
 
     glutIdleFunc(idle);
@@ -181,11 +199,17 @@ int main(int argc,char *argv[])
     LoadTexture("textures/grass.jpg",64);
     
     
-
+    
+    //t1 = std::thread(count);
+    thread th1(foo, 3);
+    //thread t1(count);
 
     glutMainLoop();
+    th1.join();
+    
     return 0;
 }
+
 
 //-----------------------------------------------
 //             CHARGE SQUARES
@@ -365,10 +389,10 @@ void keyboard(unsigned char key, int x, int y){
 //-----------------------------------------------
 
 void idle(){
-    if(ARDUINO){
+    /*if(ARDUINO){
     //readSerialPort();
     moveSerialPort();
-    }
+    }*/
     long t;
     t=glutGet(GLUT_ELAPSED_TIME); 
     if(endGame != 0 && flagExit != endGame){
@@ -642,26 +666,27 @@ void LoadTexture(char *filename,int dim)
 }
 
 void moveSerialPort(){
-    readSerialPort();
+    /*readSerialPort();
     if (code != 0){
         ArrowKey(code, 0, 0);
-    }
+    }*/
 }
 
 void readSerialPort(){
     //int code = 0;
-    char t[2];
-    char * b;
+    //char t[2];
+    //char * b;
     //fwrite (buffer , sizeof(char), sizeof(buffer), serialPort);
-    size_t n;
+    //size_t n;
     //cout << b;
     //char * t = fgetln(serialPort,&n);
-    printf("helrrrrrrrrrrrrlo\n");
-    b=fgets (t,2, serialPort);
-    printf("11111111111hello   %c\n", t);
+    printf("helrrrr\n");
+
+    //b = fgetln (serialPort, &n);
+    //printf("11111111111hello   %c\n", b);
      //fclose (pFile);
-    //cout << t;
-    if (t == "1"){
+    //cout << b;
+    /*if (t == "1"){
         code = 101;
     }else if (t == "2"){
         code = 103;
@@ -669,5 +694,5 @@ void readSerialPort(){
         code = 102;
     }else if (t == "4"){
         code = 100;
-    }
+    }*/
 }
