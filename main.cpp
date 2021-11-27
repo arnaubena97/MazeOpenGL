@@ -32,8 +32,8 @@
 //              GLOBAL VARIABLES
 //-----------------------------------------------
 
-#define MED_COLUMNS 6 // Tamany del tauler
-#define MED_ROWS 6
+#define MED_COLUMNS 10 // Tamany del tauler
+#define MED_ROWS 10
 #define SIZE_SQUARE_SMALL 3 // quant mes petit
 #define WIDTH 1200  //tamany de la finestra
 #define HEIGHT 1200
@@ -262,58 +262,61 @@ void display() {
 
     //-- Spot light
 
-    //GLfloat direction_light[] = {};
-    
+    /*
     GLfloat direction_light[3];
-    
+
     if(agent1.direction == UP){
     
-        direction_light[0] = agent1.position.y;
-        direction_light[1] = agent1.position.x;
-        direction_light[2] = 0;
+        direction_light[0] = agent1.position.x;
+        direction_light[1] = agent1.position.y +10;
+        direction_light[2] = -1;
         
 
     }else if(agent1.direction == DOWN){
 
-        direction_light[0] = -agent1.position.y;
-        direction_light[1] = agent1.position.x;
-        direction_light[2] = 0;
+        direction_light[0] = agent1.position.x*agent1.size_x;
+        direction_light[1] = agent1.position.y*agent1.size_y -10;
+        direction_light[2] = -1;
         
 
     }else if(agent1.direction == RIGHT){
         
-        direction_light[0] = agent1.position.y;
-        direction_light[1] = agent1.position.x;
-        direction_light[2] = 0;
+        direction_light[0] = agent1.position.x*agent1.size_x +10;
+        direction_light[1] = agent1.position.y*agent1.size_y;
+        direction_light[2] = -1;
         
 
     }else if(agent1.direction == LEFT){
 
-        direction_light[0] = agent1.position.y;
-        direction_light[1] = agent1.position.x;
-        direction_light[2] = 0;
+        direction_light[0] = agent1.position.x*agent1.size_x -10;
+        direction_light[1] = agent1.position.y*agent1.size_y;
+        direction_light[2] = -1;
         
         
     }
-    
-    cout<<"X = "<<agent1.position.x<<" Y = "<<agent1.position.y<<endl;
-    
-    
 
     //GLfloat color[4];
     GLfloat color_light[] = {155, 249, 129, 1};
-    GLfloat position_light[] = {agent1.position.x, agent1.position.y, agent1.position.z, 1};
+    GLfloat position_light[] = {agent1.position.x*agent1.size_x, agent1.position.y*agent1.size_y,0 , 1};
     
     
     glLightfv(GL_LIGHT1, GL_POSITION, position_light);
     glLightfv(GL_LIGHT1,GL_DIFFUSE,color_light);
     glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, direction_light);
     
-    glLightf(GL_LIGHT1,GL_CONSTANT_ATTENUATION,0.5);
-    glLightf(GL_LIGHT1,GL_LINEAR_ATTENUATION,0.0);
-    glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 10.0);
+    //glLightf(GL_LIGHT1,GL_CONSTANT_ATTENUATION,0.5);
+    //glLightf(GL_LIGHT1,GL_LINEAR_ATTENUATION,0.0);
+    glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 45.0);
     
     glEnable(GL_LIGHT1);
+    
+
+    cout<<"Tank Position: X = "<<agent1.position.x*agent1.size_x<<" Y = "<<agent1.position.y*agent1.size_y<<" Z = "<<agent1.position.z<<endl;
+    cout<<"Light Position: X = "<<position_light[0]<<" Y = "<<position_light[1]<<" Z = "<<direction_light[2]<<endl; 
+    cout<<"Light Direction: X = "<<direction_light[0]<<" Y = "<<direction_light[1]<<" Z = "<<direction_light[2]<<endl; 
+    cout<<"----------------------------------------------------------------"<<endl;
+    */
+
 //--
 
     glutSwapBuffers();

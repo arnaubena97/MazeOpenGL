@@ -61,6 +61,8 @@ class SquareWall {
             glEnable(GL_TEXTURE_2D);
             glBindTexture(GL_TEXTURE_2D,0);
             glBegin(GL_QUADS); // BACK
+            glNormal3f(1,0,0);
+
             glTexCoord2f(3,0); glVertex3i(x1,y,z);
             glTexCoord2f(0,0); glVertex3i(x,y,z);
             glTexCoord2f(0,1); glVertex3i(x,y1,z);
@@ -70,6 +72,7 @@ class SquareWall {
 
             glColor3f(1,0,0); // FRONT
             glBegin(GL_QUADS);
+            glNormal3f(-1,0,0);
             glVertex3i(x1,y1,z1);
             glVertex3i(x,y1,z1);
             glVertex3i(x,y,z1);
@@ -79,6 +82,7 @@ class SquareWall {
             glEnable(GL_TEXTURE_2D);
             glBindTexture(GL_TEXTURE_2D,2); //RIGHT To texture
             glBegin(GL_QUADS);
+            glNormal3f(0,1,0);
             glTexCoord2f(3,0);glVertex3i(x,y1,z1);
             glTexCoord2f(0,0);glVertex3i(x,y1,z);
             glTexCoord2f(0,1);glVertex3i(x,y,z);
@@ -88,6 +92,7 @@ class SquareWall {
 
             glColor3f(0,0,1); // LEFT
             glBegin(GL_QUADS);
+            glNormal3f(0,-1,0);
             glVertex3i(x1,y,z1);
             glVertex3i(x1,y,z);
             glVertex3i(x1,y1,z);
@@ -246,7 +251,7 @@ class Tank{
             drawCanon(x1, x2, y1, y4, z2, z5, z6);
             
             //light
-            //lighting();
+            lighting();
 
             glRotatef(-angle, 0,-1,0);
             glPopMatrix();
@@ -404,7 +409,7 @@ class Tank{
             position = p;
         }
 
-        /*
+        
         void lighting(){
             
             //GLfloat direction_light[] = {};
@@ -415,33 +420,31 @@ class Tank{
            
                 direction_light[0] = position.x;
                 direction_light[1] = position.y;
-                direction_light[2] = 0;
+                direction_light[2] = -1;
                 
 
             }else if(direction == DOWN){
     
-                direction_light[0] = position.x + 10;
-                direction_light[1] = position.y;
-                direction_light[2] = 1;
+                direction_light[0] = position.x;
+                direction_light[1] = position.y-1;
+                direction_light[2] = -1;
                 
 
             }else if(direction == RIGHT){
                 
-                direction_light[0] = position.x;
+                direction_light[0] = position.x+1;
                 direction_light[1] = position.y;
-                direction_light[2] = 1;
+                direction_light[2] = -1;
                 
 
             }else if(direction == LEFT){
 
                 direction_light[0] = position.x + 7;
                 direction_light[1] = position.y + 2;
-                direction_light[2] = 1;
+                direction_light[2] = -1;
                 
                 
-            }
-            cout<<"X = "<<position.x<<endl;
-            
+            }    
             
 
             GLfloat color[4];
@@ -458,8 +461,10 @@ class Tank{
             glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 10.0);
             
             glEnable(GL_LIGHT1);
+
+            //cout<<"X = "<<position.x<<endl;
             
-        }*/
+        }
 
 
     private:
