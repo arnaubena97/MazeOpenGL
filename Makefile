@@ -3,10 +3,10 @@ OS := Darwin
 main:
 ifeq ($(UNAME_S), $(OS))
 	@echo "macOS system"
-	gcc -framework OpenGL -framework GLUT -ljpeg main.cpp -o main -std=c++11  -pthread
+	gcc -framework OpenGL -framework GLUT -ljpeg main.cpp -o main 
 else
 	echo "Other system"
-	g++ main.cpp -o main -lglut -lGLU -lGL -lm -ljpeg
+	g++ main.cpp -o main -lglut -lGLU -lGL -lm -ljpeg -lserial
 #gcc maze.cpp -o maze -lglut -lGLU -lGL -lm 
 endif
 clean:

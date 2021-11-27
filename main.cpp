@@ -21,7 +21,7 @@
 #include <errno.h> // Error integer and strerror() function
 #include <termios.h> // Contains POSIX terminal control definitions
 #include <unistd.h> // write(), read(), close()
-#include <thread>
+#include "serial/serial.h"
 #if  __linux__ 
     #include <GL/glut.h>
     #include "jpeglib.h"
@@ -45,8 +45,8 @@ using namespace std;
 #define SIZE_SQUARE_SMALL 3 // quant mes petit
 #define WIDTH 800  //tamany de la finestra
 #define HEIGHT 800
-
-
+#define PORT "/dev/cu.usbmodem14201"
+#define TIMEOUT 1000000 // 1 second
 int TIME = 60; // Temps de joc
 int TIME_PLAYER_OFF = 2; // temps que el jugador desapareix
 int time_show = TIME;  // auxiliar pel temps de joc
@@ -79,7 +79,7 @@ dfs intell(COLUMNS, ROWS, maze.board); // fem el DFS per trobar el cami
 
 FILE *serialPort;
 int code = 0;
-
+int serial_fd; 
 
 //-----------------------------------------------
 //                FUNCTIONS
@@ -172,14 +172,13 @@ int main(int argc,char *argv[])
     if(!ARDUINO){
         glutSpecialFunc(ArrowKey);
     }else{
-        /*
-        system( "MODE /dev/cu.usbmodem14201 : BAUD=9600 PARITY=n DATA=8 STOP=1" );
-        serialPort = fopen("/dev/cu.usbmodem14201", "r" );
-
-        if (serialPort == NULL) {
-            printf ("Error: unable to open serial port cu.usbmodem14201\n");
-            exit (1);
-        }*/
+         serial_fd=serial_open(PORT,B9600);
+ 
+        if (serial_fd==-1) {
+            printf ("Error opening the serial device: %s\n",PORT);
+            perror("OPEN");
+            exit(0);
+        }
     }
 
     glutIdleFunc(idle);
@@ -198,15 +197,11 @@ int main(int argc,char *argv[])
     glBindTexture(GL_TEXTURE_2D,3);
     LoadTexture("textures/grass.jpg",64);
     
-    
-    
-    //t1 = std::thread(count);
-    thread th1(foo, 3);
-    //thread t1(count);
 
     glutMainLoop();
-    th1.join();
-    
+    if(ARDUINO){
+        serial_close(serial_fd);
+    }
     return 0;
 }
 
@@ -389,10 +384,10 @@ void keyboard(unsigned char key, int x, int y){
 //-----------------------------------------------
 
 void idle(){
-    /*if(ARDUINO){
+    if(ARDUINO){
     //readSerialPort();
     moveSerialPort();
-    }*/
+    }
     long t;
     t=glutGet(GLUT_ELAPSED_TIME); 
     if(endGame != 0 && flagExit != endGame){
@@ -666,26 +661,28 @@ void LoadTexture(char *filename,int dim)
 }
 
 void moveSerialPort(){
-    /*readSerialPort();
-    if (code != 0){
+    readSerialPort();
+    /*if (code != 0){
         ArrowKey(code, 0, 0);
     }*/
 }
 
 void readSerialPort(){
-    //int code = 0;
-    //char t[2];
-    //char * b;
-    //fwrite (buffer , sizeof(char), sizeof(buffer), serialPort);
-    //size_t n;
-    //cout << b;
-    //char * t = fgetln(serialPort,&n);
-    printf("helrrrr\n");
-
-    //b = fgetln (serialPort, &n);
-    //printf("11111111111hello   %c\n", b);
-     //fclose (pFile);
-    //cout << b;
+    //-- Wait for the received data
+    char data[3+1];
+    int n;
+    n=serial_read(serial_fd,data,strlen(data),TIMEOUT);
+    
+    //-- Show the received data
+    printf ("String received--> ");
+    fflush(stdout);
+    
+    if (n>0) {
+        printf ("%s (%d bytes)\n",data,n);
+    }
+    else {
+        printf ("Timeout!\n");
+    }
     /*if (t == "1"){
         code = 101;
     }else if (t == "2"){
