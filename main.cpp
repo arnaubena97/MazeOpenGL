@@ -35,8 +35,8 @@
 #define MED_COLUMNS 6 // Tamany del tauler
 #define MED_ROWS 6
 #define SIZE_SQUARE_SMALL 3 // quant mes petit
-#define WIDTH 800  //tamany de la finestra
-#define HEIGHT 800
+#define WIDTH 1200  //tamany de la finestra
+#define HEIGHT 1200
 
 int TIME = 60; // Temps de joc
 int TIME_PLAYER_OFF = 2; // temps que el jugador desapareix
@@ -78,7 +78,6 @@ void ArrowKey(int key,int x,int y);
 void idle();
 void ReadJPEG(char *filename,unsigned char **image,int *width, int *height);
 void LoadTexture(char *filename,int dim);
-
 
 //-----------------------------------------------
 //             MAIN PROCEDURE
@@ -213,8 +212,8 @@ void display_text(string s, int color=0){
 
 void display() {
     GLint position[4];
-      GLfloat color[4];
-  GLfloat material[4];
+    GLfloat color[4];
+    GLfloat material[4];
 
     glClearColor(0.8,0.8,0.8,0.0);
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
@@ -232,12 +231,12 @@ void display() {
     
   //-- Ambient light
   
-  position[0]=WIDTH/2; position[1]=0; position[2]=-HEIGHT/2; position[3]=1; 
-  glLightiv(GL_LIGHT0,GL_POSITION,position);
-  
-  color[0]=0.1; color[1]=0.1; color[2]=0.1; color[3]=1;
-  glLightfv(GL_LIGHT0,GL_DIFFUSE,color);
-  glEnable(GL_LIGHT0);
+    position[0]=WIDTH/2; position[1]=0; position[2]=-HEIGHT/2; position[3]=1; 
+    glLightiv(GL_LIGHT0,GL_POSITION,position);
+    
+    color[0]=0.1; color[1]=0.1; color[2]=0.1; color[3]=1;
+    glLightfv(GL_LIGHT0,GL_DIFFUSE,color);
+    glEnable(GL_LIGHT0);
 
     wall.draw(); // walls
     wall.drawFloor(HEIGHT, WIDTH); // floor
@@ -259,6 +258,63 @@ void display() {
     }else{
         display_text("Time left: " + std::to_string(time_show) + "s");
     }
+
+
+    //-- Spot light
+
+    //GLfloat direction_light[] = {};
+    
+    GLfloat direction_light[3];
+    
+    if(agent1.direction == UP){
+    
+        direction_light[0] = agent1.position.y;
+        direction_light[1] = agent1.position.x;
+        direction_light[2] = 0;
+        
+
+    }else if(agent1.direction == DOWN){
+
+        direction_light[0] = -agent1.position.y;
+        direction_light[1] = agent1.position.x;
+        direction_light[2] = 0;
+        
+
+    }else if(agent1.direction == RIGHT){
+        
+        direction_light[0] = agent1.position.y;
+        direction_light[1] = agent1.position.x;
+        direction_light[2] = 0;
+        
+
+    }else if(agent1.direction == LEFT){
+
+        direction_light[0] = agent1.position.y;
+        direction_light[1] = agent1.position.x;
+        direction_light[2] = 0;
+        
+        
+    }
+    
+    cout<<"X = "<<agent1.position.x<<" Y = "<<agent1.position.y<<endl;
+    
+    
+
+    //GLfloat color[4];
+    GLfloat color_light[] = {155, 249, 129, 1};
+    GLfloat position_light[] = {agent1.position.x, agent1.position.y, agent1.position.z, 1};
+    
+    
+    glLightfv(GL_LIGHT1, GL_POSITION, position_light);
+    glLightfv(GL_LIGHT1,GL_DIFFUSE,color_light);
+    glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, direction_light);
+    
+    glLightf(GL_LIGHT1,GL_CONSTANT_ATTENUATION,0.5);
+    glLightf(GL_LIGHT1,GL_LINEAR_ATTENUATION,0.0);
+    glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 10.0);
+    
+    glEnable(GL_LIGHT1);
+//--
 
     glutSwapBuffers();
 }

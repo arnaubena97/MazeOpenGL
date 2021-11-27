@@ -382,50 +382,6 @@ class Tank{
             }
         }
 
-        void lighting(){
-
-            GLfloat direction_light[] = {};
-
-            //em pilla les coordenades del tank del usuari en la posició d'inici i no les actulitza
-            if(direction == UP){
-                direction_light[0] = position.x;
-                direction_light[1] = position.y + 10;
-                direction_light[2] = 1;
-
-            }else if(direction == DOWN){
-                direction_light[0] = position.x;
-                direction_light[1] = position.y - 10;
-                direction_light[2] = 1;
-
-            }else if(direction == RIGHT){
-                direction_light[0] = position.x - 10;
-                direction_light[1] = position.y;
-                direction_light[2] = 1;
-
-            }else if(direction == LEFT){
-                direction_light[0] = position.x + 10;
-                direction_light[1] = position.y;
-                direction_light[2] = 1;
-            }
-            printf("X: %d, Y: %d\n", position.x, position.y);
-
-            GLfloat color[4];
-            GLfloat position_light[] = {position.x, position.y-10, position.z, 1};
-            GLfloat color_light[] = {155, 249, 129, 1};
-            
-            //cout<<"prova"<<endl;
-            
-            glLightfv(GL_LIGHT1, GL_POSITION, position_light);
-            glLightfv(GL_LIGHT1,GL_DIFFUSE,color_light);
-            glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, direction_light);
-            
-            glLightf(GL_LIGHT1,GL_CONSTANT_ATTENUATION,0.5);
-            glLightf(GL_LIGHT1,GL_LINEAR_ATTENUATION,0.0);
-            glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 10.0);
-            
-            glEnable(GL_LIGHT1);
-	    }
-
 
         void shoot(int len){
             
@@ -447,6 +403,65 @@ class Tank{
         void reset(Point p){
             position = p;
         }
+
+        /*
+        void lighting(){
+            
+            //GLfloat direction_light[] = {};
+
+            GLfloat direction_light[3];
+            
+            if(direction == UP){
+           
+                direction_light[0] = position.x;
+                direction_light[1] = position.y;
+                direction_light[2] = 0;
+                
+
+            }else if(direction == DOWN){
+    
+                direction_light[0] = position.x + 10;
+                direction_light[1] = position.y;
+                direction_light[2] = 1;
+                
+
+            }else if(direction == RIGHT){
+                
+                direction_light[0] = position.x;
+                direction_light[1] = position.y;
+                direction_light[2] = 1;
+                
+
+            }else if(direction == LEFT){
+
+                direction_light[0] = position.x + 7;
+                direction_light[1] = position.y + 2;
+                direction_light[2] = 1;
+                
+                
+            }
+            cout<<"X = "<<position.x<<endl;
+            
+            
+
+            GLfloat color[4];
+            GLfloat color_light[] = {155, 249, 129, 1};
+            GLfloat position_light[] = {position.x, position.y, position.z, 1};
+            
+            
+            glLightfv(GL_LIGHT1, GL_POSITION, position_light);
+            glLightfv(GL_LIGHT1,GL_DIFFUSE,color_light);
+            glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, direction_light);
+            
+            glLightf(GL_LIGHT1,GL_CONSTANT_ATTENUATION,0.5);
+            glLightf(GL_LIGHT1,GL_LINEAR_ATTENUATION,0.0);
+            glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 10.0);
+            
+            glEnable(GL_LIGHT1);
+            
+        }*/
+
+
     private:
         void init_movement(int destination_x,int destination_y,int duration){
             vx = (destination_x - position.x)/duration;
