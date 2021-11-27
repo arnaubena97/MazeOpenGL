@@ -411,36 +411,37 @@ class Tank{
 
         
         void lighting(){
-            
-            //GLfloat direction_light[] = {};
 
+            //GLfloat direction_light[] = {position.x, position.y, -1};
+
+            
             GLfloat direction_light[3];
             
             if(direction == UP){
            
                 direction_light[0] = position.x;
-                direction_light[1] = position.y;
+                direction_light[1] = position.y-5;
                 direction_light[2] = -1;
                 
 
             }else if(direction == DOWN){
     
                 direction_light[0] = position.x;
-                direction_light[1] = position.y-1;
+                direction_light[1] = position.y+5;
                 direction_light[2] = -1;
                 
 
             }else if(direction == RIGHT){
                 
-                direction_light[0] = position.x+1;
+                direction_light[0] = position.x-5;
                 direction_light[1] = position.y;
                 direction_light[2] = -1;
                 
 
             }else if(direction == LEFT){
 
-                direction_light[0] = position.x + 7;
-                direction_light[1] = position.y + 2;
+                direction_light[0] = position.x+5;
+                direction_light[1] = position.y;
                 direction_light[2] = -1;
                 
                 
@@ -456,13 +457,16 @@ class Tank{
             glLightfv(GL_LIGHT1,GL_DIFFUSE,color_light);
             glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, direction_light);
             
-            glLightf(GL_LIGHT1,GL_CONSTANT_ATTENUATION,0.5);
-            glLightf(GL_LIGHT1,GL_LINEAR_ATTENUATION,0.0);
+            glLightf(GL_LIGHT1,GL_CONSTANT_ATTENUATION,1);
+            glLightf(GL_LIGHT1,GL_LINEAR_ATTENUATION, 0);
             glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 10.0);
             
             glEnable(GL_LIGHT1);
 
-            //cout<<"X = "<<position.x<<endl;
+            cout<<"Tank Position: X = "<<position.x<<" Y = "<<position.y<<" Z = "<<position.z<<endl;
+            cout<<"Light Position: X = "<<position_light[0]<<" Y = "<<position_light[1]<<" Z = "<<direction_light[2]<<endl; 
+            cout<<"Light Direction: X = "<<direction_light[0]<<" Y = "<<direction_light[1]<<" Z = "<<direction_light[2]<<endl; 
+            cout<<"----------------------------------------------------------------"<<endl;
             
         }
 
