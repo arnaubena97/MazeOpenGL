@@ -3,6 +3,14 @@
  * Authors: Arnau Benavides, Marc Felip
  *
 *********************************************************/
+/*
+- Color del tanque 
+- Escursar la llum 
+- rotar la llum 
+- treure llum quan es mort
+
+*/
+
 
 //-----------------------------------------------
 //           INCLUDES DEPENDS OS
@@ -38,7 +46,7 @@
 #define WIDTH 1200  //tamany de la finestra
 #define HEIGHT 1200
 
-int TIME = 60; // Temps de joc
+int TIME = 600; // Temps de joc
 int TIME_PLAYER_OFF = 2; // temps que el jugador desapareix
 int time_show = TIME;  // auxiliar pel temps de joc
 int time_show_shooted = TIME_PLAYER_OFF; // auxiliar per un jugador disparat
@@ -205,7 +213,15 @@ void display_text(string s, int color=0){
     glMatrixMode(GL_PROJECTION);
     glPopMatrix();
 }
-
+void ambient_light(){
+    //-- Ambient light
+    
+    GLfloat position[4] = {WIDTH, 0.1, HEIGHT, 1};
+    glLightfv(GL_LIGHT0, GL_POINT, position);
+    GLfloat color[4] = {0.1, 0.1, 0.1, 1};
+     glLightfv(GL_LIGHT0, GL_DIFFUSE, color);
+     glEnable(GL_LIGHT0);
+}
 //-----------------------------------------------
 //             DISPLAY PROCEDURE
 //-----------------------------------------------
@@ -229,14 +245,7 @@ void display() {
 
     glMatrixMode(GL_MODELVIEW);
     
-  //-- Ambient light
   
-    position[0]=WIDTH/2; position[1]=0; position[2]=-HEIGHT/2; position[3]=1; 
-    glLightiv(GL_LIGHT0,GL_POSITION,position);
-    
-    color[0]=0.1; color[1]=0.1; color[2]=0.1; color[3]=1;
-    glLightfv(GL_LIGHT0,GL_DIFFUSE,color);
-    glEnable(GL_LIGHT0);
 
     wall.draw(); // walls
     wall.drawFloor(HEIGHT, WIDTH); // floor
@@ -260,64 +269,7 @@ void display() {
     }
 
 
-    //-- Spot light
-
-    /*
-    GLfloat direction_light[3];
-
-    if(agent1.direction == UP){
-    
-        direction_light[0] = agent1.position.x;
-        direction_light[1] = agent1.position.y +10;
-        direction_light[2] = -1;
-        
-
-    }else if(agent1.direction == DOWN){
-
-        direction_light[0] = agent1.position.x*agent1.size_x;
-        direction_light[1] = agent1.position.y*agent1.size_y -10;
-        direction_light[2] = -1;
-        
-
-    }else if(agent1.direction == RIGHT){
-        
-        direction_light[0] = agent1.position.x*agent1.size_x +10;
-        direction_light[1] = agent1.position.y*agent1.size_y;
-        direction_light[2] = -1;
-        
-
-    }else if(agent1.direction == LEFT){
-
-        direction_light[0] = agent1.position.x*agent1.size_x -10;
-        direction_light[1] = agent1.position.y*agent1.size_y;
-        direction_light[2] = -1;
-        
-        
-    }
-
-    //GLfloat color[4];
-    GLfloat color_light[] = {155, 249, 129, 1};
-    GLfloat position_light[] = {agent1.position.x*agent1.size_x, agent1.position.y*agent1.size_y,0 , 1};
-    
-    
-    glLightfv(GL_LIGHT1, GL_POSITION, position_light);
-    glLightfv(GL_LIGHT1,GL_DIFFUSE,color_light);
-    glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, direction_light);
-    
-    //glLightf(GL_LIGHT1,GL_CONSTANT_ATTENUATION,0.5);
-    //glLightf(GL_LIGHT1,GL_LINEAR_ATTENUATION,0.0);
-    glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 45.0);
-    
-    glEnable(GL_LIGHT1);
-    
-
-    cout<<"Tank Position: X = "<<agent1.position.x*agent1.size_x<<" Y = "<<agent1.position.y*agent1.size_y<<" Z = "<<agent1.position.z<<endl;
-    cout<<"Light Position: X = "<<position_light[0]<<" Y = "<<position_light[1]<<" Z = "<<direction_light[2]<<endl; 
-    cout<<"Light Direction: X = "<<direction_light[0]<<" Y = "<<direction_light[1]<<" Z = "<<direction_light[2]<<endl; 
-    cout<<"----------------------------------------------------------------"<<endl;
-    */
-
-//--
+   ambient_light();
 
     glutSwapBuffers();
 }
