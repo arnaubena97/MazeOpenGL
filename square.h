@@ -503,11 +503,6 @@ class Tank{
             glLightf(light, GL_SPOT_CUTOFF, 20.0);
             
             glEnable(light);
-            cout<<symbol;
-            cout<<"Tank Position: X = "<<position.x<<" Y = "<<position.y<<" Z = "<<position.z<<endl;
-            cout<<"Light Position: X = "<<position_light[0]<<" Y = "<<position_light[1]<<" Z = "<<direction_light[2]<<endl; 
-            cout<<"Light Direction: X = "<<direction_light[0]<<" Y = "<<direction_light[1]<<" Z = "<<direction_light[2]<<endl; 
-            cout<<"----------------------------------------------------------------"<<endl;
             
         }
         void lightingvis(){
@@ -562,11 +557,6 @@ class Tank{
             glLightf(light, GL_SPOT_CUTOFF, 20.0);
             
             glEnable(light);
-            cout<<symbol;
-            cout<<"Tank Position: X = "<<position.x<<" Y = "<<position.y<<" Z = "<<position.z<<endl;
-            cout<<"Light Position: X = "<<position_light[0]<<" Y = "<<position_light[1]<<" Z = "<<direction_light[2]<<endl; 
-            cout<<"Light Direction: X = "<<direction_light[0]<<" Y = "<<direction_light[1]<<" Z = "<<direction_light[2]<<endl; 
-            cout<<"----------------------------------------------------------------"<<endl;
             
         }
 
@@ -597,7 +587,9 @@ class Tank{
 
         void drawWheels( GLfloat x0,  GLfloat x1,  GLfloat x3,  GLfloat x5,  GLfloat x6,  GLfloat y0, GLfloat y1, GLfloat y2,  GLfloat z1, GLfloat z5, GLfloat xpw1, GLfloat xpw2, float wheel, bool side){
 
-            glColor3f(1,0,0);
+            GLfloat color[] = { 0.7f,0.04f,0.04f,1.0f};
+
+            glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color);
             glBegin(GL_QUADS); // xapa1 fora
             glVertex3i(x1,y2,z1);
             glVertex3i(x5,y0,z1);
@@ -605,7 +597,7 @@ class Tank{
             glVertex3i(x1,y2,z5);
             glEnd();
 
-            glColor3f(0,1,0);
+            glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color);
             glBegin(GL_QUADS); // xapa2 fora
             glVertex3i(x3,y2,z1);
             glVertex3i(x1,y2,z1);
@@ -613,7 +605,7 @@ class Tank{
             glVertex3i(x3,y2,z5);
             glEnd();
 
-            glColor3f(0,0,1);
+            glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color);
             glBegin(GL_QUADS); // xapa3 fora
             glVertex3i(x5,y0,z1);
             glVertex3i(x6,y0,z1);
@@ -621,7 +613,7 @@ class Tank{
             glVertex3i(x5,y0,z5);
             glEnd();
             
-            glColor3f(1,1,0);
+            glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color);
             glBegin(GL_QUADS); // xapa4 fora
             glVertex3i(x6,y0,z1);
             glVertex3i(x3,y2,z1);
@@ -629,8 +621,7 @@ class Tank{
             glVertex3i(x6,y0,z5);
             glEnd();
 
-            
-            glColor3f(0.4,0.2,0.8);
+            glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color);
             glBegin(GL_QUADS); // xapa5 fora
             glVertex3i(x1,y2,z5);
             glVertex3i(x5,y0,z5);
@@ -638,8 +629,7 @@ class Tank{
             glVertex3i(x3,y2,z5);
             glEnd();
 
-
-            glColor3f(1,0,1);
+            glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color);
             glBegin(GL_QUADS); // xapa6 exterior
             glVertex3i(x5,y0,z1);
             glVertex3i(x1,y2,z1);
@@ -675,7 +665,10 @@ class Tank{
         void drawBody(GLfloat x1, GLfloat x7, GLfloat y1,
                     GLfloat y3, GLfloat z1, GLfloat z3){
 
-            glColor3f(1,0,1);
+            GLfloat color[] = {0.7f,0.7f,0.04f,1.0f};
+
+            glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color);
+            //glColor3f(1,0,1);
             glBegin(GL_QUADS); // xapa1 sota
             glVertex3i(x1,y1,z1);
             glVertex3i(x7,y1,z1);
@@ -683,8 +676,8 @@ class Tank{
             glVertex3i(x1,y1,z3);
             glEnd();
 
-
-            glColor3f(0.1,0,1);
+            glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color);
+            //glColor3f(0.1,0,1);
             glBegin(GL_QUADS); // xapa1 costat esq
             glVertex3i(x7,y1,z1);
             glVertex3i(x1,y1,z1);
@@ -692,7 +685,8 @@ class Tank{
             glVertex3i(x7,y3,z1);
             glEnd();    
 
-            glColor3f(0.1,0.4,0.5);
+            glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color);
+            //glColor3f(0.1,0.4,0.5);
             glBegin(GL_QUADS); // xapa1 costat dret
             glVertex3i(x1,y1,z3);
             glVertex3i(x7,y1,z3);
@@ -700,7 +694,8 @@ class Tank{
             glVertex3i(x1,y3,z3);
             glEnd();   
 
-            glColor3f(0.1,0.2,0.5);
+            glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color);
+            //glColor3f(0.1,0.2,0.5);
             glBegin(GL_QUADS); // xapa1 costat davat
             glVertex3i(x1,y1,z1);
             glVertex3i(x1,y1,z3);
@@ -708,7 +703,8 @@ class Tank{
             glVertex3i(x1,y3,z1);
             glEnd();  
 
-            glColor3f(0.5,0.2,0.2);
+            glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color);
+            //glColor3f(0.5,0.2,0.2);
             glBegin(GL_QUADS); // xapa1 costat davat
             glVertex3i(x7,y1,z3);
             glVertex3i(x7,y1,z1);
@@ -716,7 +712,8 @@ class Tank{
             glVertex3i(x7,y3,z3);
             glEnd();  
 
-            glColor3f(0.5,0.7,0.1);
+            glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color);
+            //glColor3f(0.5,0.7,0.1);
             glBegin(GL_QUADS); // xapa1 costat davat
             glVertex3i(x1,y3,z1);
             glVertex3i(x1,y3,z3);
@@ -729,11 +726,15 @@ class Tank{
 
         void drawCanon(GLfloat x1,GLfloat x2, GLfloat y1, GLfloat y4,
                      GLfloat z2, GLfloat z5, GLfloat z6){
+
+            GLfloat color[] = {0.04f,0.7f,0.04f,1.0f};
+
             GLfloat zr = (z6-z5)/3.0;
             GLUquadricObj *p = gluNewQuadric();
             glRotatef(90.0, 1.0, 0.0, 0.0);
             glTranslatef(x2, z2, -y4);
-            glColor3f(1,0.8,0);
+            //glColor3f(1,0.8,0);
+            glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color);
             gluCylinder(p, zr, zr, 2*y1, 500, 500);
             glColor3f(0.2,0.5,1);
             gluDisk(p, 0,zr, 100, 100);
@@ -750,9 +751,12 @@ class Tank{
         }
 
         void drawShoot(GLfloat x2,GLfloat y1, GLfloat y4, GLfloat z2){
+            GLfloat color[] = {0.333333f, 0.333333f, 0.521569f, 1.0f};
+
             GLUquadricObj *p = gluNewQuadric();
             glTranslatef(+x2, +y4 - (y1/2)*1.05, +z2);
-            glColor3f(1,1,1);
+            //glColor3f(1,1,1);
+            glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color);
             gluSphere(p, (y1/2)*0.95, 500, 500);
             glTranslatef(-x2, -y4+ (y1/2)*1.05,  -z2);
             glEnd();

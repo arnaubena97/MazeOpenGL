@@ -40,8 +40,8 @@
 //              GLOBAL VARIABLES
 //-----------------------------------------------
 
-#define MED_COLUMNS 10 // Tamany del tauler
-#define MED_ROWS 10
+#define MED_COLUMNS 5 // Tamany del tauler
+#define MED_ROWS 5
 #define SIZE_SQUARE_SMALL 3 // quant mes petit
 #define WIDTH 1200  //tamany de la finestra
 #define HEIGHT 1200
@@ -142,8 +142,7 @@ int main(int argc,char *argv[])
     glutCreateWindow("Maze board");
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_TEXTURE_2D);
-    glEnable(GL_LIGHTING);
-        
+    glEnable(GL_LIGHTING);       
     glutDisplayFunc(display);
     glutKeyboardFunc(keyboard);
     glutSpecialFunc(ArrowKey);
