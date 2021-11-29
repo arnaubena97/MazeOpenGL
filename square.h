@@ -276,23 +276,25 @@ class Tank{
 
             glPolygonMode(GL_FRONT,GL_FILL);
             glPolygonMode(GL_BACK,GL_LINE);
-            //lighting();
+            
             glPushMatrix();
             glTranslatef(x2, y0, z2);
             //glTranslatef((x0 + size_x/2), y0, (z0 + size_z/2));
             glRotatef(angle, 0,1,0);
             glTranslatef(-x2, y0, -z2);
             //glTranslatef(-(x0 + size_x/2), -y0, -(z0 + size_z/2));
-
+            lightingvis();
             drawWheels(x0, x1, x3, x5, x6, y0, y1, y2, z1, z5, xpw1, xpw2, -0.3, 0);
             drawWheels(x0, x1, x3, x5, x6, y0, y1, y2, z6, z3, xpw1, xpw2, -0.5, 1);
             drawBody(x5, x6, y1, y3, z5, z6);
             drawCanon(x1, x2, y1, y4, z2, z5, z6);
+
             
 
             
 
             glRotatef(-angle, 0,-1,0);
+
             glPopMatrix();
             glPushMatrix();
             x2 = (position_shoot.x + 0.5)* size_x;
@@ -302,11 +304,8 @@ class Tank{
             drawShoot(x2, y1, y4, z2);
             glPopMatrix();
 
-            //lighting();
-            //glPushMatrix();
 
-            lighting();
-            //glPopMatrix();
+            //lighting();
         }
 
         void integrate(long t){
@@ -511,7 +510,65 @@ class Tank{
             cout<<"----------------------------------------------------------------"<<endl;
             
         }
+        void lightingvis(){
 
+            //GLfloat direction_light[] = {position.x, position.y, -1};
+
+            GLfloat direction_light[3];
+            if(direction == UP){
+           
+                direction_light[0] = 0;
+                direction_light[1] = 0;
+                direction_light[2] = -1;
+                
+
+            }else if(direction == DOWN){
+    
+                direction_light[0] = 0;
+                direction_light[1] = 0;
+                direction_light[2] = 1;
+                
+
+            }else if(direction == RIGHT){
+                
+                direction_light[0] = 1;
+                direction_light[1] = 0;
+                direction_light[2] = 0;
+                
+
+            }else if(direction == LEFT){
+                direction_light[0] = -1;
+                direction_light[1] = 0;
+                direction_light[2] = 0;
+                
+            }  
+            GLenum light = GL_LIGHT1;  
+            if(symbol == 'S'){
+                light = GL_LIGHT1;
+            }else {
+                light = GL_LIGHT2;
+            }
+
+            GLfloat color_light[] = {1, 1, 1, 1};
+            //GLfloat position_light[] = {position.x* size_x, position.z* size_z,position.y* size_y, 1};
+            GLfloat position_light[] = {position.x*size_x+size_x/2 , size_z+1*2,size_y*position.y + size_y/2, 1};
+            GLfloat dir[] = {1,0,0};
+            
+            glLightfv(light, GL_POSITION, position_light);
+            glLightfv(light,GL_DIFFUSE,color_light);
+            glLightfv(light, GL_SPOT_DIRECTION, dir);
+            glLightf(light,GL_CONSTANT_ATTENUATION,0.3);
+            glLightf(light, GL_SPOT_EXPONENT, 10);
+            glLightf(light, GL_SPOT_CUTOFF, 20.0);
+            
+            glEnable(light);
+            cout<<symbol;
+            cout<<"Tank Position: X = "<<position.x<<" Y = "<<position.y<<" Z = "<<position.z<<endl;
+            cout<<"Light Position: X = "<<position_light[0]<<" Y = "<<position_light[1]<<" Z = "<<direction_light[2]<<endl; 
+            cout<<"Light Direction: X = "<<direction_light[0]<<" Y = "<<direction_light[1]<<" Z = "<<direction_light[2]<<endl; 
+            cout<<"----------------------------------------------------------------"<<endl;
+            
+        }
 
     private:
         void init_movement(int destination_x,int destination_y,int duration){
