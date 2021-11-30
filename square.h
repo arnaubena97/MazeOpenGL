@@ -180,16 +180,16 @@ class Walls {
                     glEnable(GL_TEXTURE_2D);
                     glBindTexture(GL_TEXTURE_2D,3); 
                     glBegin(GL_QUADS);
-                    glNormal3f(1,0,0);
+                    //glNormal3f(0,1,0);
                     glTexCoord2f(30,0);glVertex3i(0,0,0);//vertex baix esquerra
 
-                    glNormal3f(1,0,0);
+                    //glNormal3f(0,1,0);
                     glTexCoord2f(0,0);glVertex3i(0,0,j*size_y);//vertex baix dreta
 
-                    glNormal3f(1,0,0);
+                    //glNormal3f(0,1,0);
                     glTexCoord2f(0,30);glVertex3i(i*size_x,0,j*size_y);//vertex dalt dreta
 
-                    glNormal3f(1,0,0);
+                    //glNormal3f(0,1,0);
                     glTexCoord2f(30,30);glVertex3i(i*size_x,0,0);//vertex dalt esquerra
                     glEnd();
                     glDisable(GL_TEXTURE_2D);
@@ -225,6 +225,7 @@ class Tank{
         int angle, teoric_angle;
         char symbol;
         bool flag = false;
+        bool isDead = false;
         Tank(char sym){
             state = QUIET;
             time_mov= 300;
@@ -283,16 +284,14 @@ class Tank{
             glRotatef(angle, 0,1,0);
             glTranslatef(-x2, y0, -z2);
             //glTranslatef(-(x0 + size_x/2), -y0, -(z0 + size_z/2));
-            lightingvis();
+            
+            lightrotate();
+            glEnable(GL_COLOR_MATERIAL);
             drawWheels(x0, x1, x3, x5, x6, y0, y1, y2, z1, z5, xpw1, xpw2, -0.3, 0);
             drawWheels(x0, x1, x3, x5, x6, y0, y1, y2, z6, z3, xpw1, xpw2, -0.5, 1);
             drawBody(x5, x6, y1, y3, z5, z6);
             drawCanon(x1, x2, y1, y4, z2, z5, z6);
-
-            
-
-            
-
+            glDisable(GL_COLOR_MATERIAL);
             glRotatef(-angle, 0,-1,0);
 
             glPopMatrix();
@@ -450,7 +449,7 @@ class Tank{
         }
 
         
-        void lighting(){
+        void lightingDirections(){
 
             //GLfloat direction_light[] = {position.x, position.y, -1};
 
@@ -510,38 +509,8 @@ class Tank{
             cout<<"----------------------------------------------------------------"<<endl;
             
         }
-        void lightingvis(){
+        void lightrotate(){
 
-            //GLfloat direction_light[] = {position.x, position.y, -1};
-
-            GLfloat direction_light[3];
-            if(direction == UP){
-           
-                direction_light[0] = 0;
-                direction_light[1] = 0;
-                direction_light[2] = -1;
-                
-
-            }else if(direction == DOWN){
-    
-                direction_light[0] = 0;
-                direction_light[1] = 0;
-                direction_light[2] = 1;
-                
-
-            }else if(direction == RIGHT){
-                
-                direction_light[0] = 1;
-                direction_light[1] = 0;
-                direction_light[2] = 0;
-                
-
-            }else if(direction == LEFT){
-                direction_light[0] = -1;
-                direction_light[1] = 0;
-                direction_light[2] = 0;
-                
-            }  
             GLenum light = GL_LIGHT1;  
             if(symbol == 'S'){
                 light = GL_LIGHT1;
@@ -559,15 +528,10 @@ class Tank{
             glLightfv(light, GL_SPOT_DIRECTION, dir);
             glLightf(light,GL_CONSTANT_ATTENUATION,0.3);
             glLightf(light, GL_SPOT_EXPONENT, 10);
-            glLightf(light, GL_SPOT_CUTOFF, 20.0);
-            
+            glLightf(light, GL_SPOT_CUTOFF, 23.0);
+            glLightf(light, GL_LINEAR_ATTENUATION, 0.001f);
             glEnable(light);
-            cout<<symbol;
-            cout<<"Tank Position: X = "<<position.x<<" Y = "<<position.y<<" Z = "<<position.z<<endl;
-            cout<<"Light Position: X = "<<position_light[0]<<" Y = "<<position_light[1]<<" Z = "<<direction_light[2]<<endl; 
-            cout<<"Light Direction: X = "<<direction_light[0]<<" Y = "<<direction_light[1]<<" Z = "<<direction_light[2]<<endl; 
-            cout<<"----------------------------------------------------------------"<<endl;
-            
+
         }
 
     private:

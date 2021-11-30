@@ -58,20 +58,20 @@ class dfs{
 					int index = 0;
 					while (!d.empty()) {
 						dir[index] = d.top();
-        				cout << ' ' << d.top();
+        				//cout << ' ' << d.top();
         				d.pop();
 						index++;
    					}
 					lenPath = index;
-					printf("\n");
+					//printf("\n");
 					//display(visited);
 					printf("\n");
-					display(path);
+					//display(path);
 					//_getch();
 					return;
 				}
 				if (m == 0 && n == 0) {
-					cout << "NO SOLUTION POSSIBLE!";
+					//cout << "NO SOLUTION POSSIBLE!";
 					//_getch();
 					//sleep(1000);
 					return;

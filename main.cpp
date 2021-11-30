@@ -3,13 +3,6 @@
  * Authors: Arnau Benavides, Marc Felip
  *
 *********************************************************/
-/*
-- Color del tanque 
-- Escursar la llum 
-- rotar la llum 
-- treure llum quan es mort
-
-*/
 
 
 //-----------------------------------------------
@@ -33,20 +26,17 @@
     #include "jpeg-9d3/jpeglib.h"
 #endif
 
-
-
-
 //-----------------------------------------------
 //              GLOBAL VARIABLES
 //-----------------------------------------------
 
-#define MED_COLUMNS 10 // Tamany del tauler
-#define MED_ROWS 10
+#define MED_COLUMNS 5// Tamany del tauler
+#define MED_ROWS 5
 #define SIZE_SQUARE_SMALL 3 // quant mes petit
 #define WIDTH 1200  //tamany de la finestra
 #define HEIGHT 1200
 
-int TIME = 600; // Temps de joc
+int TIME = 60; // Temps de joc
 int TIME_PLAYER_OFF = 2; // temps que el jugador desapareix
 int time_show = TIME;  // auxiliar pel temps de joc
 int time_show_shooted = TIME_PLAYER_OFF; // auxiliar per un jugador disparat
@@ -192,6 +182,8 @@ void chargeSquares(){
 //             DISPLAY TEXT
 //-----------------------------------------------
 void display_text(string s, int color=0){
+    glEnable(GL_COLOR_MATERIAL);
+    glDisable(GL_LIGHTING);
     float size = 0.3;
     if(color ==0)(time_show<= 10) ? glColor3f(1.0, 0.0, 0.0): glColor3f(0.0, 0.0, 0.0);
     if(color==1)(glColor3f(0.0, 1.0, 0.0));
@@ -212,6 +204,9 @@ void display_text(string s, int color=0){
     glPopMatrix();
     glMatrixMode(GL_PROJECTION);
     glPopMatrix();
+    glDisable(GL_COLOR_MATERIAL);
+
+    glEnable(GL_LIGHTING);
 }
 void ambient_light(){
     //-- Ambient light
@@ -260,7 +255,10 @@ void display() {
         if (time_show <=-2) exit(0);
     }else if(endGame==1){
         display_text("PLAYER 1 WIN", 1);
-        if (time_show <=-2) exit(0);
+        if (time_show <=-2){
+            system("./main &");
+            exit(0);
+        }
     }else if(endGame==2){
         display_text("PLAYER 2 WIN", 2);
         if (time_show <=-2) exit(0);
@@ -377,12 +375,16 @@ void idle(){
         //printf("pos x: %f y:%f\n", agent2.position.x, agent2.position.y);
         if(agent1.position_shoot.Equal(agent2.position) && flagShooted==0){
             //printf("AGENT2 DEAD\n");
+            glDisable(GL_LIGHT2);
+            agent2.isDead = true;
             maze.resetAgent(maze.agent2);
             flagShooted = 2;
             time_show_shooted = (int)((int)t/1000);
         }
         if(agent2.position_shoot.Equal(agent1.position) && flagShooted==0){
             //printf("AGENT1 DEAD\n");
+            agent1.isDead = true;
+            glDisable(GL_LIGHT1);
             maze.resetAgent(maze.agent1);
             flagShooted = 1;
             time_show_shooted = (int)((int)t/1000);
@@ -394,11 +396,13 @@ void idle(){
                 agent2.position_shoot = agent2.position;
                 flagShooted = 0;
                 index_path = 0;
+                agent2.isDead=false;
             }else if(flagShooted ==1){
                 maze.putPlayer(maze.agent1, maze.startPosition);
                 agent1.reset(maze.startPosition);
                 agent1.position_shoot = agent1.position;
                 flagShooted = 0;
+                agent1.isDead=false;
             }
         }
         if(flagShooted != 2){
