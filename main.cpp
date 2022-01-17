@@ -76,7 +76,7 @@ void ArrowKey(int key,int x,int y);
 void idle();
 void ReadJPEG(char *filename,unsigned char **image,int *width, int *height);
 void LoadTexture(char *filename,int dim);
-
+void moveSerialPort();
 //-----------------------------------------------
 //             MAIN PROCEDURE
 //-----------------------------------------------
@@ -276,6 +276,7 @@ void display() {
 //            KEYBOARD EVENTS
 //-----------------------------------------------
 void ArrowKey(int key,int x,int y){
+    printf("key: %d",key);
     if(endGame == 0 && flagShooted!=1){
         switch (key){
             case GLUT_KEY_RIGHT:
@@ -347,6 +348,7 @@ void keyboard(unsigned char key, int x, int y){
         anglealpha=(anglealpha-3+360)%360;
     else if (key=='o')
         zoomfactor -= 0.1;
+        
     else if (key=='p')
         zoomfactor += 0.1;
     else if (key==' '){
@@ -362,7 +364,15 @@ void keyboard(unsigned char key, int x, int y){
 //            IDLE
 //-----------------------------------------------
 
+
+void moveSerialPort(){
+    int result = system("/Library/Frameworks/Python.framework/Versions/3.7/bin/python3 readPortSerial.py");
+    cout << result; 
+
+}
 void idle(){
+    //moveSerialPort();
+
     long t;
     t=glutGet(GLUT_ELAPSED_TIME); 
     if(endGame != 0 && flagExit != endGame){
@@ -421,7 +431,7 @@ void idle(){
         agent2.integrate(t-last_t);
         last_t=t;
     }
-
+    
     glutPostRedisplay();
 }
 
