@@ -276,7 +276,7 @@ void display() {
 //            KEYBOARD EVENTS
 //-----------------------------------------------
 void ArrowKey(int key,int x,int y){
-    printf("key: %d",key);
+    //printf("key: %d",key);
     if(endGame == 0 && flagShooted!=1){
         switch (key){
             case GLUT_KEY_RIGHT:
@@ -364,15 +364,7 @@ void keyboard(unsigned char key, int x, int y){
 //            IDLE
 //-----------------------------------------------
 
-
-void moveSerialPort(){
-    int result = system("/Library/Frameworks/Python.framework/Versions/3.7/bin/python3 readPortSerial.py");
-    cout << result; 
-
-}
 void idle(){
-    //moveSerialPort();
-
     long t;
     t=glutGet(GLUT_ELAPSED_TIME); 
     if(endGame != 0 && flagExit != endGame){

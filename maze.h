@@ -19,8 +19,9 @@ class Maze {
 
         int columns; // num columns
         int rows; // num rows
-        char agent1, agent2; // chars of the agents
+        char agent1, agent2; // chars of the agents S E
         Point startPosition, endPosition;
+
         Maze(int med_columns1, int med_rows1)
         {
             agent1 = 'S';
@@ -176,6 +177,25 @@ class Maze {
         void putPlayer(char sym, Point p){
             board[int(p.x)][int(p.y)] = sym;
         }
+    
+        char * getPossibleActionsAgent(){
+            Point position = getSpecificPoint(agent2);
+            char actions[4] = { ' ',' ',' ',' '};
+            if(canMoveUp(position, agent1)){
+                actions[0] = 'U';
+            }
+            if(canMoveDown(position, agent1)){
+                actions[1] = 'D';
+            }
+            if(canMoveLeft(position, agent1)){
+                actions[2] = 'L';
+            }
+            if(canMoveRight(position, agent1)){
+                actions[0] = 'R';
+            }
+            return actions;
+        }
+    
     private:
         int med_columns;
         int med_rows;
