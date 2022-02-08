@@ -27,21 +27,21 @@ There is also time, so you can't get distracted.
 
 
 ### Move Board:
-- I: turns upward
+- **I**: turns upward
 
-- J: turns left
+- **J**: turns left
 
-- K: turns downward
+- **K**: turns downward
 
-- L: turns right
+- **L**: turns right
 
 <img style="height:160px; width:230px;" src=https://user-images.githubusercontent.com/10574631/152813770-018733fd-8ade-489e-9863-c02799c23122.png>
 
 
 
 ### Zoom:
- - O: More
- - P: Less
+ - **O**: More
+ - **P**: Less
 
 <img style="height:70px; width:150px;" src=https://user-images.githubusercontent.com/10574631/152814192-1f2d248b-e31a-4aeb-a73c-5c578a829eb5.png>
 
@@ -51,7 +51,7 @@ There is also time, so you can't get distracted.
 <img style="height:70px; width:230px;" src=https://user-images.githubusercontent.com/10574631/152816565-e530711b-2192-4a65-898f-87012802da4e.png>
 
 ### Exit:
-Press ESC to exit.
+Press **ESC** to exit.
 
 
 ## How execute
