@@ -30,11 +30,11 @@
 //              GLOBAL VARIABLES
 //-----------------------------------------------
 
-#define MED_COLUMNS 5// Tamany del tauler
-#define MED_ROWS 5
+#define MED_COLUMNS 6// Tamany del tauler
+#define MED_ROWS 6
 #define SIZE_SQUARE_SMALL 3 // quant mes petit
-#define WIDTH 1200  //tamany de la finestra
-#define HEIGHT 1200
+#define WIDTH 800  //tamany de la finestra
+#define HEIGHT 800
 
 int TIME = 60; // Temps de joc
 int TIME_PLAYER_OFF = 2; // temps que el jugador desapareix
@@ -142,22 +142,17 @@ int main(int argc,char *argv[])
     glutIdleFunc(idle);
 
     glBindTexture(GL_TEXTURE_2D,0);
-    LoadTexture("textures/pared.jpg",64);
+    LoadTexture((char *)"textures/pared.jpg",64);
     
     glBindTexture(GL_TEXTURE_2D,1);
-    LoadTexture("textures/grava.jpg",64);
-    
+    LoadTexture((char *)"textures/grava.jpg",64);
     
     glBindTexture(GL_TEXTURE_2D,2);
-    LoadTexture("textures/wood.jpg",64);
-    
+    LoadTexture((char *)"textures/wood.jpg",64);
     
     glBindTexture(GL_TEXTURE_2D,3);
-    LoadTexture("textures/grass.jpg",64);
+    LoadTexture((char *)"textures/grass.jpg",64);
     
-    
-
-
     glutMainLoop();
     return 0;
 }
@@ -331,7 +326,7 @@ void ArrowKey(int key,int x,int y){
 };
 
 void keyboard(unsigned char key, int x, int y){
-    printf("%c",key);
+    //printf("%c",key);
     switch (key) {
         case 27: // exit with ESC
         exit(0);
@@ -373,10 +368,8 @@ void idle(){
         TIME = 1 + (int)((int)t/1000);
     } else if(endGame ==0){
         
-        //printf("shot x: %f y:%f\n", agent1.position_shoot.x, agent1.position_shoot.y);
-        //printf("pos x: %f y:%f\n", agent2.position.x, agent2.position.y);
         if(agent1.position_shoot.Equal(agent2.position) && flagShooted==0){
-            //printf("AGENT2 DEAD\n");
+            //Agent 2 dead
             glDisable(GL_LIGHT2);
             agent2.isDead = true;
             maze.resetAgent(maze.agent2);
@@ -384,7 +377,7 @@ void idle(){
             time_show_shooted = (int)((int)t/1000);
         }
         if(agent2.position_shoot.Equal(agent1.position) && flagShooted==0){
-            //printf("AGENT1 DEAD\n");
+            //Agent 1 dead
             agent1.isDead = true;
             glDisable(GL_LIGHT1);
             maze.resetAgent(maze.agent1);
@@ -407,7 +400,7 @@ void idle(){
                 agent1.isDead=false;
             }
         }
-        if(flagShooted != 2){
+        if(flagShooted != 2){//change the commented line to apply random or dfs
             //randomMove();
             dfsMove();
         }
@@ -493,6 +486,7 @@ void randomMove(){
         }
     }
 }
+
 char revert(char c){
     char ret;
     if(c=='d') ret = 'l';
@@ -558,6 +552,7 @@ void dfsMove(){
     }
 }
 /*--------------------------------------------------------*/
+//          TEXTURES
 /*--------------------------------------------------------*/
 void ReadJPEG(char *filename,unsigned char **image,int *width, int *height)
 {
@@ -607,8 +602,6 @@ void ReadJPEG(char *filename,unsigned char **image,int *width, int *height)
   jpeg_finish_decompress(&cinfo);
 } 
 
-/*--------------------------------------------------------*/
-/*--------------------------------------------------------*/
 void LoadTexture(char *filename,int dim)
 {
   unsigned char *buffer;

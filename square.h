@@ -224,13 +224,15 @@ class Tank{
         long time_remaining, time_mov;
         int angle, teoric_angle;
         char symbol;
-        bool flag = false;
-        bool isDead = false;
+        bool flag;
+        bool isDead;
         Tank(char sym){
             state = QUIET;
             time_mov= 300;
             direction = RIGHT;
             symbol = sym;
+            flag = false;
+            isDead = false;
         }
         
         void setSizesXY(float x, float y, float z = 0){

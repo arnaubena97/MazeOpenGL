@@ -168,6 +168,7 @@ class Maze {
                 }
                 return x-pos.x-1;
             }
+            return 0;
         }
         void resetAgent(char sym){
             Point p = getSpecificPoint(sym);
@@ -177,25 +178,7 @@ class Maze {
         void putPlayer(char sym, Point p){
             board[int(p.x)][int(p.y)] = sym;
         }
-    
-        char * getPossibleActionsAgent(){
-            Point position = getSpecificPoint(agent2);
-            char actions[4] = { ' ',' ',' ',' '};
-            if(canMoveUp(position, agent1)){
-                actions[0] = 'U';
-            }
-            if(canMoveDown(position, agent1)){
-                actions[1] = 'D';
-            }
-            if(canMoveLeft(position, agent1)){
-                actions[2] = 'L';
-            }
-            if(canMoveRight(position, agent1)){
-                actions[0] = 'R';
-            }
-            return actions;
-        }
-    
+        
     private:
         int med_columns;
         int med_rows;
