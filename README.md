@@ -16,7 +16,7 @@ Project of the subject: Computer Graphics and Multimedia.
 It consists of a one player game (Player vs Computer) where the board is a labyrinth. To win the tank must reach the opponent's starting square. If the opponent arrives before you, you lose.
 There is also time, so you can't get distracted.
 
-![game_image](https://user-images.githubusercontent.com/10574631/152810071-21123652-898b-4024-9e5f-90d5cfa04755.png)
+![game_image](https://user-images.githubusercontent.com/10574631/152955667-47078c59-fc7d-4dd9-9bb0-8acdc4e33cb6.png)
 
 
 ## How to play
