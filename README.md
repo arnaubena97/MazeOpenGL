@@ -84,8 +84,6 @@ If the link to the guide does not work, inside the [folder](JoystickArduino/) th
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore -->
 <!-- markdownlint-disable -->
-<center>
-<div align="center">
 <table align="center">
   <tr>
     <td align="center"><a href="https://github.com/arnaubena97"><img src="https://avatars0.githubusercontent.com/u/10574631?s=460&v=4" width="100px;" alt=""/><br /><sub><b>Arnau Benavides</b></sub></a></td>
@@ -93,6 +91,4 @@ If the link to the guide does not work, inside the [folder](JoystickArduino/) th
 
   </tr>
  </table>
- </div>
- </center>
 <!-- ALL-CONTRIBUTORS-LIST:END -->
