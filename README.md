@@ -70,7 +70,7 @@ Imports are done automatically on linux and MacOs depending on the operating sys
 
 ## Intelligence enemy
 
-The enemy tank has a bit of intelligence to make the game more difficult. It is equipped with a [DFS][1], algorithm to know which directions to take to reach the opponent's opponent's square.
+The enemy tank has a bit of intelligence to make the game more difficult. It is equipped with a [DFS][1] algorithm to know which directions to take to reach the opponent's opponent's square.
 The shooting of the opponent is random, it can move or shoot.
 
 [1]: <https://en.wikipedia.org/wiki/Depth-first_search> "DFS"
